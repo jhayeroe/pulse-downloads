@@ -2,26 +2,27 @@
 
 Official public download archive for **PULSE**.
 
-## Latest Stable — v2.5.0
+## Latest Stable — v2.5.1
 
-[**Download PULSE Stable v2.5.0 APK**](./apk/PULSE-Stable-v2.5.0.apk)
+[**Download PULSE Stable v2.5.1 APK**](./apk/PULSE-Stable-v2.5.1.apk)
 
 ### What's new
-- Swipe **RIGHT** on an alarm for **REMIND +5m**.
-- Swipe **LEFT** to reveal **Delete**, with confirmation before removal.
-- Added a **4-step first-install Quick Start Guide** with Back, Next, Skip, and Get Started.
-- Existing users updating from an older PULSE Stable build are not forced through onboarding.
-- Quick Start Guide can be reopened anytime from **Settings → Help**.
-- **NEW ALARM / EDIT ALARM** screen is now compact with a fixed **SAVE** action at the top.
-- Task and Details are condensed, time shortcuts are tighter, Category + Sound share one row, and alarm modes use compact chips.
-- Quick Remind now uses a separate scheduled reminder so it does not replace the original recurring alarm schedule.
-- Keeps the v2.4.3 dashboard: icon navigation, enlarged running time, date beside the clock, sort icon, and ADD ALARM +.
+- Reminder editor now uses **Reminder Title** and a larger multi-line **Reminder Details** field.
+- Alarm time is full-width, centered, and no longer clipped.
+- New reminders default to **Important OFF**, **Vibrate ON**, and **Bypass Silent ON**.
+- Turning **Important ON** explains that DONE requires a **2-second hold**.
+- Turning Vibrate or Bypass Silent OFF shows a confirmation explaining the effect.
+- Swipe gestures were tuned for faster horizontal recognition and immediate actions: **RIGHT = Remind +5m**, **LEFT = Delete**.
+- Added a lightweight **Update Available** notice on the main dashboard when a newer public Stable version is online.
+- Update checking is optional/non-blocking: PULSE remains fully usable offline and on older versions.
+- Keeps the first-install Quick Start Guide, backup/restore, flexible snooze, Quick Remind, and public APK archive.
 
 ## Version Archive
 
 | Version | Status | Download |
 |---|---|---|
-| **v2.5.0** | **LATEST** | [Download APK](./apk/PULSE-Stable-v2.5.0.apk) |
+| **v2.5.1** | **LATEST** | [Download APK](./apk/PULSE-Stable-v2.5.1.apk) |
+| v2.5.0 | Previous | [Download APK](./apk/PULSE-Stable-v2.5.0.apk) |
 | v2.4.3 | Previous | [Download APK](./apk/PULSE-Stable-v2.4.3.apk) |
 | v2.4.2 | Previous | [Download APK](./apk/PULSE-Stable-v2.4.2.apk) |
 
