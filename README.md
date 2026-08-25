@@ -2,27 +2,25 @@
 
 Official public download archive for **PULSE**.
 
-## Latest Stable — v2.4.2
+## Latest Stable — v2.4.3
 
-[**Download PULSE Stable v2.4.2 APK**](./apk/PULSE-Stable-v2.4.2.apk)
+[**Download PULSE Stable v2.4.3 APK**](./apk/PULSE-Stable-v2.4.3.apk)
 
 ### What's new
-- **ADD ALARM +** is now a full text button beside Sort and matches the Sort control height.
-- Live dashboard clock includes seconds.
-- Alarm sorting: Newest, Next, Time, Oldest.
-- Snooze: 5 min, 10 min, or Custom.
-- Editable Default Snooze and Default Quick Remind.
-- Completed one-time alarms support quick +5m / +10m / REMIND +X.
-- Import / Export PULSE Backup.
-- Public **APK VERSION ARCHIVE** link is available inside PULSE Settings.
+- Top navigation is now icon-based for **Meeting Mode, Light/Dark, History, and Settings**.
+- Removed the large bottom History / Settings buttons to keep the alarm list cleaner.
+- **RUNNING TIME** is significantly larger and uses a condensed bold clock style.
+- Day and date now sit beside the enlarged live clock.
+- Alarm sort is now a compact **sort icon beside ALARMS** while Newest First remains the default.
+- **ADD ALARM +** remains visible on the right.
+- Keeps all v2.4.2 features: live seconds, flexible snooze, Quick Remind, backup/import-export, reliability controls, and public version archive.
 
 ## Version Archive
 
-The permanent public archive starts with **v2.4.2**. Future Stable APK versions will remain available here so users can download the latest build or return to an archived version when needed.
-
 | Version | Status | Download |
 |---|---|---|
-| **v2.4.2** | **LATEST** | [Download APK](./apk/PULSE-Stable-v2.4.2.apk) |
+| **v2.4.3** | **LATEST** | [Download APK](./apk/PULSE-Stable-v2.4.3.apk) |
+| v2.4.2 | Previous | [Download APK](./apk/PULSE-Stable-v2.4.2.apk) |
 
 ## Install or Update
 
