@@ -1,37 +1,38 @@
 # PULSE APK Downloads
 
-Official public APK archive for **PULSE**.
+Official public download archive for **PULSE**.
 
-## Latest Stable
+## Latest Stable — v2.4.2
 
-### PULSE Stable v2.4.2
+[**Download PULSE Stable v2.4.2 APK**](./apk/PULSE-Stable-v2.4.2.apk)
 
-**Status:** Latest
+### What's new
+- **ADD ALARM +** is now a full text button beside Sort and matches the Sort control height.
+- Live dashboard clock includes seconds.
+- Alarm sorting: Newest, Next, Time, Oldest.
+- Snooze: 5 min, 10 min, or Custom.
+- Editable Default Snooze and Default Quick Remind.
+- Completed one-time alarms support quick +5m / +10m / REMIND +X.
+- Import / Export PULSE Backup.
+- Public **APK VERSION ARCHIVE** link is available inside PULSE Settings.
 
-Download: [PULSE-Stable-v2.4.2.apk](./apk/PULSE-Stable-v2.4.2.apk)
+## Version Archive
 
-### What's new in v2.4.2
-- `ADD ALARM +` is now a full text button beside Sort
-- Same compact pill height as the Sort control
-- Public APK Version Archive link added inside PULSE Settings
-- Keeps all v2.4.1 features: live seconds, snooze 5/10/custom, Quick Remind, backup/import-export, sort options
+The permanent public archive starts with **v2.4.2**. Future Stable APK versions will remain available here so users can download the latest build or return to an archived version when needed.
 
-## Previous Stable Versions
+| Version | Status | Download |
+|---|---|---|
+| **v2.4.2** | **LATEST** | [Download APK](./apk/PULSE-Stable-v2.4.2.apk) |
 
-| Version | Download |
-|---|---|
-| v2.4.1 | [PULSE-Stable-v2.4.1.apk](./apk/PULSE-Stable-v2.4.1.apk) |
-| v2.3.0 | [PULSE-Stable-v2.3.0.apk](./apk/PULSE-Stable-v2.3.0.apk) |
+## Install or Update
 
-## Install / Update
+1. Download the latest APK.
+2. Open the APK on Android.
+3. Allow installation from your browser or file manager if Android asks.
+4. If **PULSE Stable** is already installed, install the newer APK directly over it. **Do not uninstall first**, so your alarms and app data remain intact.
 
-1. Download the latest APK above.
-2. Open the downloaded file on Android.
-3. Allow installation from the browser/file manager if Android asks.
-4. If you already use **PULSE Stable**, install the newer version directly over it. Do not uninstall first, so your alarms remain intact.
+## Recommended Backup
 
-## Backup before major changes
+Before a major update, open **PULSE → Settings → Backup & Restore → Export PULSE Backup**.
 
-Inside PULSE: **Settings → Backup & Restore → Export PULSE Backup**.
-
-> PULSE Stable APKs in this archive use the same Stable signing line so normal future updates can install over the existing app.
+> Stable builds use the same PULSE Stable signing line, allowing supported future versions to update over the existing installation.
