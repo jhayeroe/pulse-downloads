@@ -1,0 +1,40 @@
+name: Publish PULSE v2.5.0 APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/publish-v250.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout public downloads repo
+        uses: actions/checkout@v4
+
+      - name: Download signed PULSE v2.5.0 build
+        run: |
+          curl -L --fail 'https://sdmntprindiasocentral.oaiusercontent.com/files/00000000-1a14-8211-b2c3-22e5fdb5a763/raw?se=2026-08-25T03%3A27%3A00Z&sp=r&sv=2026-02-06&sr=b&scid=ab7b20c5-21b3-587c-b7a6-55dc046af670&skoid=54865dd2-31dc-44cc-a877-635aa4250446&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-24T22%3A43%3A21Z&ske=2026-08-25T22%3A43%3A21Z&sks=b&skv=2026-02-06&sig=b9kdLxtCSYDHO7O2eyC06qcXYBiBaJ9SC%2B/qeQ3XH1w%3D' -o pulse.zip
+          rm -rf extracted
+          mkdir -p extracted apk
+          unzip -o pulse.zip -d extracted
+          APK_PATH="$(find extracted -type f -name '*.apk' | head -n 1)"
+          test -n "$APK_PATH"
+          cp "$APK_PATH" apk/PULSE-Stable-v2.5.0.apk
+          ls -lh apk/PULSE-Stable-v2.5.0.apk
+
+      - name: Commit APK to public archive
+        run: |
+          git config user.name 'PULSE Release Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add apk/PULSE-Stable-v2.5.0.apk
+          if git diff --cached --quiet; then
+            echo 'APK already published.'
+            exit 0
+          fi
+          git commit -m 'Publish PULSE Stable v2.5.0 APK'
+          git push
