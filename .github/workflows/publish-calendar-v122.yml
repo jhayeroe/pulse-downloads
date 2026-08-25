@@ -1,0 +1,42 @@
+name: Publish Pulse Calendar v1.2.2 APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/publish-calendar-v122.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout public downloads repo
+        uses: actions/checkout@v4
+
+      - name: Download signed Pulse Calendar v1.2.2 build
+        run: |
+          curl -L --fail 'https://sdmntpraustraliaeast.oaiusercontent.com/files/00000000-d780-81fa-a179-79857361a133/raw?se=2026-08-25T21%3A54%3A28Z&sp=r&sv=2026-02-06&sr=b&scid=d1883575-9dc5-5d5a-bd3d-3ab9d3ba13e6&skoid=cb94e22a-e3df-4e6a-9e17-1696f40fa435&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-25T21%3A04%3A48Z&ske=2026-08-26T21%3A04%3A48Z&sks=b&skv=2026-02-06&sig=7IRfWD4bAKYe2ioImbjPRXe3APEBL5AMaGDlmugrUiw%3D' -o calendar.zip
+          rm -rf extracted
+          mkdir -p extracted apk
+          unzip -o calendar.zip -d extracted
+          APK_PATH="$(find extracted -type f -name '*.apk' | head -n 1)"
+          test -n "$APK_PATH"
+          cp "$APK_PATH" apk/PULSE-Calendar-v1.2.2.apk
+          cp "$APK_PATH" apk/PULSE-Calendar-Latest.apk
+          printf '1.2.2\n' > calendar-latest.txt
+          ls -lh apk/PULSE-Calendar-v1.2.2.apk apk/PULSE-Calendar-Latest.apk
+
+      - name: Commit Calendar APK and update channel
+        run: |
+          git config user.name 'PULSE Release Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add apk/PULSE-Calendar-v1.2.2.apk apk/PULSE-Calendar-Latest.apk calendar-latest.txt
+          if git diff --cached --quiet; then
+            echo 'Calendar APK already published.'
+            exit 0
+          fi
+          git commit -m 'Publish Pulse Calendar v1.2.2 APK'
+          git push
