@@ -18,7 +18,7 @@
     },
     {
       "key": "notes",
-      "name": "PULSE Notes",
+      "name": "Pulse Notes",
       "package": "com.pulse.notes.stable",
       "version": "1.0.4",
       "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Notes-v1.0.4.apk"
