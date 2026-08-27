@@ -1,0 +1,17 @@
+{
+  "name": "Pulse Suite",
+  "package": "com.pulse.suite.stable",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Suite-Latest.apk",
+  "sha256": "15d59c4a3950c6416a2d33097351f58ee83a15ce10d3e4c18c9988c09cfb5ec4",
+  "notes": [
+    "Pulse Account sign in and account creation",
+    "RS8 workspace join and connection status",
+    "Install, open and update Pulse Alarm, Calendar and Notes",
+    "Guided Install / Update All with progress",
+    "Light and dark appearance",
+    "Pulse Suite icon and splash screen",
+    "Built-in self-update and version history"
+  ]
+}
