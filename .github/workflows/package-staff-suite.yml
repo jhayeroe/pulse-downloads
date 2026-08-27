@@ -24,4 +24,29 @@ jobs:
           test -f apk/PULSE-Notes-v1.0.6.apk
           rm -rf staff-suite
           mkdir -p staff-suite
-          cp apk/PULSE-Stable
+          cp apk/PULSE-Stable-v2.5.6.apk staff-suite/Pulse-Alarm-v2.5.6.apk
+          cp apk/PULSE-Calendar-v1.3.3.apk staff-suite/Pulse-Calendar-v1.3.3.apk
+          cp apk/PULSE-Notes-v1.0.6.apk staff-suite/Pulse-Notes-v1.0.6.apk
+          cat > staff-suite/INSTALL-FIRST.txt <<'TXT'
+          PULSE Suite for Staff
+
+          Install these three APKs:
+          1. Pulse-Alarm-v2.5.6.apk
+          2. Pulse-Calendar-v1.3.3.apk
+          3. Pulse-Notes-v1.0.6.apk
+
+          After installation, open the apps and sign in to your Pulse Account.
+          Future updates can be installed through the in-app updater.
+          TXT
+          rm -f PULSE-Staff-Suite-Latest.zip
+          cd staff-suite
+          zip -q -9 ../PULSE-Staff-Suite-Latest.zip *.apk INSTALL-FIRST.txt
+          cd ..
+
+      - name: Commit staff ZIP
+        run: |
+          git config user.name 'PULSE Release Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add PULSE-Staff-Suite-Latest.zip
+          git commit -m 'Publish one-link PULSE Staff Suite' || exit 0
+          git push
