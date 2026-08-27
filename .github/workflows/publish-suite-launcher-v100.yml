@@ -18,12 +18,12 @@ jobs:
 
       - name: Download signed Pulse Suite artifact
         run: |
-          curl -L --fail --retry 3 'https://sdmntprnortheu.oaiusercontent.com/files/00000000-7364-81f4-a2cb-2c6c8741a744/raw?se=2026-08-27T12%3A42%3A46Z&sp=r&sv=2026-02-06&sr=b&scid=9dfface4-838e-578a-ac9f-23fd4b970a46&skoid=0a4a0f0c-99ac-4752-9d87-cfac036fa93f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-27T04%3A15%3A04Z&ske=2026-08-28T04%3A15%3A04Z&sks=b&skv=2026-02-06&sig=SSF1UmixGNmGrwYGJBE8vvXqxvDS4DmGlzPHsL4HgSI%3D' -o pulse-suite-v1.0.0.zip
-          echo 'c7934a8bc52df18ff5bbf17de6f53dc8da675d1def5ccf0537c7cb4b70ea1e91  pulse-suite-v1.0.0.zip' | sha256sum -c -
+          curl -L --fail --retry 3 'https://sdmntprnortheu.oaiusercontent.com/files/00000000-5e6c-81f4-b19a-86807d8f9d5f/raw?se=2026-08-27T12%3A55%3A02Z&sp=r&sv=2026-02-06&sr=b&scid=a6c55976-ffbc-5492-916a-fa0a82fe3f0f&skoid=6658dbdd-f305-4d30-8f6b-d62218202cb9&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-27T06%3A47%3A27Z&ske=2026-08-28T06%3A47%3A27Z&sks=b&skv=2026-02-06&sig=PYgx4%2Bw6WyiXSJZRYHhtDG08McgA%2BrbxcQIrG0GJ07Y%3D' -o pulse-suite-v1.0.0.zip
+          echo '1ef41feb4394bfb73f76249e8cf932d66c897d4c02e8e61c23a08832447a2bc5  pulse-suite-v1.0.0.zip' | sha256sum -c -
           rm -rf pulse-suite-release
           mkdir -p pulse-suite-release
           unzip -q pulse-suite-v1.0.0.zip -d pulse-suite-release
-          echo 'b59b8057ecf149849374718273017ececb5bb93484785aa1c515d027a805374a  pulse-suite-release/PULSE-Suite-v1.0.0.apk' | sha256sum -c -
+          echo '15d59c4a3950c6416a2d33097351f58ee83a15ce10d3e4c18c9988c09cfb5ec4  pulse-suite-release/PULSE-Suite-v1.0.0.apk' | sha256sum -c -
 
       - name: Publish Pulse Suite APK and update channel
         run: |
@@ -38,13 +38,15 @@ jobs:
             "version": "1.0.0",
             "versionCode": 1,
             "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Suite-Latest.apk",
-            "sha256": "b59b8057ecf149849374718273017ececb5bb93484785aa1c515d027a805374a",
+            "sha256": "15d59c4a3950c6416a2d33097351f58ee83a15ce10d3e4c18c9988c09cfb5ec4",
             "notes": [
               "Pulse Account sign in and account creation",
-              "RS8 workspace join",
+              "RS8 workspace join and connection status",
               "Install, open and update Pulse Alarm, Calendar and Notes",
-              "Install / Update All",
-              "Built-in Pulse Suite self-update channel"
+              "Guided Install / Update All with progress",
+              "Light and dark appearance",
+              "Pulse Suite icon and splash screen",
+              "Built-in self-update and version history"
             ]
           }
           JSON
@@ -55,5 +57,5 @@ jobs:
           git config user.name 'PULSE Release Bot'
           git config user.email 'actions@users.noreply.github.com'
           git add apk/PULSE-Suite-v1.0.0.apk apk/PULSE-Suite-Latest.apk suite-latest.txt suite-launcher.json
-          git commit -m 'Publish Pulse Suite launcher v1.0.0'
+          git commit -m 'Publish Pulse Suite launcher v1.0.0' || exit 0
           git push
