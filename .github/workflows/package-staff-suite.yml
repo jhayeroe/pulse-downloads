@@ -1,0 +1,27 @@
+name: Package PULSE Staff Suite
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'staff-suite-trigger.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout downloads repo
+        uses: actions/checkout@v4
+
+      - name: Build staff ZIP
+        run: |
+          set -e
+          test -f apk/PULSE-Stable-v2.5.6.apk
+          test -f apk/PULSE-Calendar-v1.3.3.apk
+          test -f apk/PULSE-Notes-v1.0.6.apk
+          rm -rf staff-suite
+          mkdir -p staff-suite
+          cp apk/PULSE-Stable
