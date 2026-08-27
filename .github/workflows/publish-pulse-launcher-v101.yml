@@ -1,0 +1,119 @@
+name: Publish Pulse Launcher Ecosystem v1.0.1
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'pulse-launcher-v101-trigger.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout downloads repo
+        uses: actions/checkout@v4
+
+      - name: Download verified coordinated release bundle
+        run: |
+          curl -L --fail --retry 3 'https://sdmntprnortheu.oaiusercontent.com/files/00000000-2fb4-81f4-b090-8a0f6b1c4191/raw?se=2026-08-27T13%3A38%3A20Z&sp=r&sv=2026-02-06&sr=b&scid=de8f2e11-2e19-5dfb-b62f-35e621ceb139&skoid=a4604a88-85e4-4562-b6ab-a5622268de80&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-27T06%3A39%3A17Z&ske=2026-08-28T06%3A39%3A17Z&sks=b&skv=2026-02-06&sig=c59%2BS2gBNr67OWQ6KvbJsmLkaupLgtgQdK3YRyjq7Vk%3D' -o release.zip
+          echo '997d98a3f162c5d619af07e24304677d9686c60d75cbcdbe9b204365be2d20bd  release.zip' | sha256sum -c -
+          rm -rf release
+          mkdir release
+          unzip -q release.zip -d release
+          echo '2b6dd9e392bd0ef8c9c7eb97da2ef9ddaaad0605f08c02905670e9f74bd55f99  release/PULSE-Suite-v1.0.1.apk' | sha256sum -c -
+          echo '13fae1a9767123211e7268ad2a5ab0120184300e715be5718403967ca4a2744a  release/PULSE-Stable-v2.5.7.apk' | sha256sum -c -
+          echo '06601efc24a2c5b2ca5f0015036a048833edbefc3a170c640666530f470a202f  release/PULSE-Calendar-v1.3.4.apk' | sha256sum -c -
+          echo '807bae6025ca9b10f3864a5dc5e5ed959d748ad9466a35b0eb863c5349995a53  release/PULSE-Notes-v1.0.7.apk' | sha256sum -c -
+
+      - name: Publish launcher ecosystem
+        run: |
+          mkdir -p apk
+          cp release/PULSE-Suite-v1.0.1.apk apk/PULSE-Suite-v1.0.1.apk
+          cp release/PULSE-Suite-v1.0.1.apk apk/PULSE-Suite-Latest.apk
+          cp release/PULSE-Stable-v2.5.7.apk apk/PULSE-Stable-v2.5.7.apk
+          cp release/PULSE-Stable-v2.5.7.apk apk/PULSE-Stable-Latest.apk
+          cp release/PULSE-Calendar-v1.3.4.apk apk/PULSE-Calendar-v1.3.4.apk
+          cp release/PULSE-Calendar-v1.3.4.apk apk/PULSE-Calendar-Latest.apk
+          cp release/PULSE-Notes-v1.0.7.apk apk/PULSE-Notes-v1.0.7.apk
+          cp release/PULSE-Notes-v1.0.7.apk apk/PULSE-Notes-Latest.apk
+          printf '1.0.1\n' > suite-latest.txt
+          printf '2.5.7\n' > latest.txt
+          printf '1.3.4\n' > calendar-latest.txt
+          printf '1.0.7\n' > notes-latest.txt
+          cat > suite-latest.json <<'JSON'
+          {
+            "suite": "PULSE Suite",
+            "schema": 1,
+            "apps": [
+              {
+                "key": "alarm",
+                "name": "Pulse Alarm",
+                "package": "com.pulse.alarm.stable",
+                "version": "2.5.7",
+                "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Stable-Latest.apk"
+              },
+              {
+                "key": "calendar",
+                "name": "Pulse Calendar",
+                "package": "com.pulse.calendar.stable",
+                "version": "1.3.4",
+                "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Calendar-Latest.apk"
+              },
+              {
+                "key": "notes",
+                "name": "Pulse Notes",
+                "package": "com.pulse.notes.stable",
+                "version": "1.0.7",
+                "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Notes-Latest.apk"
+              }
+            ]
+          }
+          JSON
+          cat > suite-launcher.json <<'JSON'
+          {
+            "name": "Pulse Suite",
+            "package": "com.pulse.suite.stable",
+            "version": "1.0.1",
+            "versionCode": 2,
+            "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Suite-Latest.apk",
+            "sha256": "2b6dd9e392bd0ef8c9c7eb97da2ef9ddaaad0605f08c02905670e9f74bd55f99"
+          }
+          JSON
+          cat > suite-history.json <<'JSON'
+          [
+            {
+              "version": "1.0.1",
+              "date": "2026-08-27",
+              "notes": [
+                "Pulse Suite is now the sole app launcher for the Pulse ecosystem",
+                "Fixed installed Pulse app detection and refresh after installer return",
+                "Added tactile button press animation and haptic feedback",
+                "Pulse Alarm, Calendar and Notes are hidden from the system app drawer after update",
+                "Pulse Notes now inherits the active Pulse Suite account and workspace session"
+              ]
+            },
+            {
+              "version": "1.0.0",
+              "date": "2026-08-27",
+              "notes": [
+                "Pulse Account and workspace home",
+                "Install, open and update Pulse Alarm, Calendar and Notes",
+                "Guided Install / Update All",
+                "Light and dark appearance",
+                "Built-in update channel and version history"
+              ]
+            }
+          ]
+          JSON
+
+      - name: Commit public release
+        run: |
+          rm -rf release release.zip
+          git config user.name 'PULSE Release Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add apk/PULSE-Suite-v1.0.1.apk apk/PULSE-Suite-Latest.apk apk/PULSE-Stable-v2.5.7.apk apk/PULSE-Stable-Latest.apk apk/PULSE-Calendar-v1.3.4.apk apk/PULSE-Calendar-Latest.apk apk/PULSE-Notes-v1.0.7.apk apk/PULSE-Notes-Latest.apk suite-latest.txt latest.txt calendar-latest.txt notes-latest.txt suite-latest.json suite-launcher.json suite-history.json
+          git commit -m 'Publish Pulse launcher ecosystem 1.0.1'
+          git push
