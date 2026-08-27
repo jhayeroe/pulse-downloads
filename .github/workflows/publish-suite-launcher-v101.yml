@@ -1,0 +1,84 @@
+name: Publish Pulse Suite Launcher v1.0.1
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'suite-launcher-v101-trigger.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout downloads repo
+        uses: actions/checkout@v4
+
+      - name: Download signed Pulse Suite v1.0.1 artifact
+        run: |
+          curl -L --fail --retry 3 'https://sdmntprjapaneast.oaiusercontent.com/files/00000000-ac38-8209-8b42-10ad1b4b47ab/raw?se=2026-08-27T13%3A10%3A51Z&sp=r&sv=2026-02-06&sr=b&scid=cc274e09-1c83-5c39-a27a-ae1241dcc19a&skoid=1e4bb9ed-6bb5-424a-a3aa-79f21566e722&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-27T04%3A10%3A58Z&ske=2026-08-28T04%3A10%3A58Z&sks=b&skv=2026-02-06&sig=RntowNvi%2BQkWhq3l11%2BkflhVF/gt6v2Gcu3GROmvSdg%3D' -o pulse-suite-v1.0.1.zip
+          echo 'f7d78709c9e12f224d0fc492e017362fd599ecccd691694c912e799b97d45463  pulse-suite-v1.0.1.zip' | sha256sum -c -
+          rm -rf pulse-suite-release
+          mkdir -p pulse-suite-release
+          unzip -q pulse-suite-v1.0.1.zip -d pulse-suite-release
+          echo 'bea168d86b8d75564ead220b2e47878d1dac9b71deceacf6fd00e79f75e884c1  pulse-suite-release/PULSE-Suite-v1.0.1.apk' | sha256sum -c -
+
+      - name: Publish Pulse Suite v1.0.1
+        run: |
+          mkdir -p apk
+          cp pulse-suite-release/PULSE-Suite-v1.0.1.apk apk/PULSE-Suite-v1.0.1.apk
+          cp pulse-suite-release/PULSE-Suite-v1.0.1.apk apk/PULSE-Suite-Latest.apk
+          printf '1.0.1\n' > suite-latest.txt
+          cat > suite-launcher.json <<'JSON'
+          {
+            "name": "Pulse Suite",
+            "package": "com.pulse.suite.stable",
+            "version": "1.0.1",
+            "versionCode": 2,
+            "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Suite-Latest.apk",
+            "sha256": "bea168d86b8d75564ead220b2e47878d1dac9b71deceacf6fd00e79f75e884c1",
+            "notes": [
+              "Fixed installed Pulse Alarm, Calendar and Notes detection on Android 11+.",
+              "Added press-scale and ripple feedback to Pulse Suite buttons.",
+              "Improved install/open/update status reliability."
+            ]
+          }
+          JSON
+          cat > suite-history.json <<'JSON'
+          [
+            {
+              "version": "1.0.1",
+              "date": "2026-08-27",
+              "notes": [
+                "Fixed Android 11+ package visibility so installed Pulse Alarm, Pulse Calendar and Pulse Notes are detected correctly.",
+                "Added rounded ripple feedback and a quick press-scale animation to Pulse Suite buttons.",
+                "Bumped Pulse Suite updater channel to v1.0.1."
+              ]
+            },
+            {
+              "version": "1.0.0",
+              "date": "2026-08-27",
+              "notes": [
+                "Introduced Pulse Suite as the home for Pulse Alarm, Pulse Calendar and Pulse Notes.",
+                "Added Pulse Account sign in, account creation and account sync.",
+                "Added RS8 workspace join and connection status.",
+                "Added app detection with Install, Open and Update states.",
+                "Added guided Install / Update All with progress status.",
+                "Added Pulse Suite self-update channel.",
+                "Added light and dark appearance, Pulse Suite icon and splash screen.",
+                "Added first-open update changelog and version history support."
+              ]
+            }
+          ]
+          JSON
+
+      - name: Commit public Pulse Suite v1.0.1 release
+        run: |
+          rm -rf pulse-suite-v1.0.1.zip pulse-suite-release
+          git config user.name 'PULSE Release Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add apk/PULSE-Suite-v1.0.1.apk apk/PULSE-Suite-Latest.apk suite-latest.txt suite-launcher.json suite-history.json
+          git commit -m 'Publish Pulse Suite launcher v1.0.1'
+          git push
