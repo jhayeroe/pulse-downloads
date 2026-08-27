@@ -1,0 +1,59 @@
+name: Publish Pulse Suite Launcher v1.0.0
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'suite-launcher-trigger.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout downloads repo
+        uses: actions/checkout@v4
+
+      - name: Download signed Pulse Suite artifact
+        run: |
+          curl -L --fail --retry 3 'https://sdmntprnortheu.oaiusercontent.com/files/00000000-7364-81f4-a2cb-2c6c8741a744/raw?se=2026-08-27T12%3A42%3A46Z&sp=r&sv=2026-02-06&sr=b&scid=9dfface4-838e-578a-ac9f-23fd4b970a46&skoid=0a4a0f0c-99ac-4752-9d87-cfac036fa93f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-27T04%3A15%3A04Z&ske=2026-08-28T04%3A15%3A04Z&sks=b&skv=2026-02-06&sig=SSF1UmixGNmGrwYGJBE8vvXqxvDS4DmGlzPHsL4HgSI%3D' -o pulse-suite-v1.0.0.zip
+          echo 'c7934a8bc52df18ff5bbf17de6f53dc8da675d1def5ccf0537c7cb4b70ea1e91  pulse-suite-v1.0.0.zip' | sha256sum -c -
+          rm -rf pulse-suite-release
+          mkdir -p pulse-suite-release
+          unzip -q pulse-suite-v1.0.0.zip -d pulse-suite-release
+          echo 'b59b8057ecf149849374718273017ececb5bb93484785aa1c515d027a805374a  pulse-suite-release/PULSE-Suite-v1.0.0.apk' | sha256sum -c -
+
+      - name: Publish Pulse Suite APK and update channel
+        run: |
+          mkdir -p apk
+          cp pulse-suite-release/PULSE-Suite-v1.0.0.apk apk/PULSE-Suite-v1.0.0.apk
+          cp pulse-suite-release/PULSE-Suite-v1.0.0.apk apk/PULSE-Suite-Latest.apk
+          printf '1.0.0\n' > suite-latest.txt
+          cat > suite-launcher.json <<'JSON'
+          {
+            "name": "Pulse Suite",
+            "package": "com.pulse.suite.stable",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Suite-Latest.apk",
+            "sha256": "b59b8057ecf149849374718273017ececb5bb93484785aa1c515d027a805374a",
+            "notes": [
+              "Pulse Account sign in and account creation",
+              "RS8 workspace join",
+              "Install, open and update Pulse Alarm, Calendar and Notes",
+              "Install / Update All",
+              "Built-in Pulse Suite self-update channel"
+            ]
+          }
+          JSON
+
+      - name: Commit public Pulse Suite release
+        run: |
+          rm -rf pulse-suite-v1.0.0.zip pulse-suite-release
+          git config user.name 'PULSE Release Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add apk/PULSE-Suite-v1.0.0.apk apk/PULSE-Suite-Latest.apk suite-latest.txt suite-launcher.json
+          git commit -m 'Publish Pulse Suite launcher v1.0.0'
+          git push
