@@ -3,23 +3,22 @@
     "version": "1.0.1",
     "date": "2026-08-27",
     "notes": [
-      "Fixed Android 11+ package visibility so installed Pulse Alarm, Pulse Calendar and Pulse Notes are detected correctly.",
-      "Added rounded ripple feedback and a quick press-scale animation to Pulse Suite buttons.",
-      "Bumped Pulse Suite updater channel to v1.0.1."
+      "Pulse Suite is now the sole app launcher for the Pulse ecosystem",
+      "Fixed installed Pulse app detection and refresh after installer return",
+      "Added tactile button press animation and haptic feedback",
+      "Pulse Alarm, Calendar and Notes are hidden from the system app drawer after update",
+      "Pulse Notes now inherits the active Pulse Suite account and workspace session"
     ]
   },
   {
     "version": "1.0.0",
     "date": "2026-08-27",
     "notes": [
-      "Introduced Pulse Suite as the home for Pulse Alarm, Pulse Calendar and Pulse Notes.",
-      "Added Pulse Account sign in, account creation and account sync.",
-      "Added RS8 workspace join and connection status.",
-      "Added app detection with Install, Open and Update states.",
-      "Added guided Install / Update All with progress status.",
-      "Added Pulse Suite self-update channel.",
-      "Added light and dark appearance, Pulse Suite icon and splash screen.",
-      "Added first-open update changelog and version history support."
+      "Pulse Account and workspace home",
+      "Install, open and update Pulse Alarm, Calendar and Notes",
+      "Guided Install / Update All",
+      "Light and dark appearance",
+      "Built-in update channel and version history"
     ]
   }
 ]

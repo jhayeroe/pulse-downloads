@@ -4,10 +4,5 @@
   "version": "1.0.1",
   "versionCode": 2,
   "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Suite-Latest.apk",
-  "sha256": "bea168d86b8d75564ead220b2e47878d1dac9b71deceacf6fd00e79f75e884c1",
-  "notes": [
-    "Fixed installed Pulse Alarm, Calendar and Notes detection on Android 11+.",
-    "Added press-scale and ripple feedback to Pulse Suite buttons.",
-    "Improved install/open/update status reliability."
-  ]
+  "sha256": "2b6dd9e392bd0ef8c9c7eb97da2ef9ddaaad0605f08c02905670e9f74bd55f99"
 }
