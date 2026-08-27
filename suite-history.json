@@ -1,0 +1,16 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2026-08-27",
+    "notes": [
+      "Introduced Pulse Suite as the home for Pulse Alarm, Pulse Calendar and Pulse Notes.",
+      "Added Pulse Account sign in, account creation and account sync.",
+      "Added RS8 workspace join and connection status.",
+      "Added app detection with Install, Open and Update states.",
+      "Added guided Install / Update All with progress status.",
+      "Added Pulse Suite self-update channel.",
+      "Added light and dark appearance, Pulse Suite icon and splash screen.",
+      "Added first-open update changelog and version history support."
+    ]
+  }
+]
