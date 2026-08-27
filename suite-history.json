@@ -1,5 +1,14 @@
 [
   {
+    "version": "1.0.1",
+    "date": "2026-08-27",
+    "notes": [
+      "Fixed Android 11+ package visibility so installed Pulse Alarm, Pulse Calendar and Pulse Notes are detected correctly.",
+      "Added rounded ripple feedback and a quick press-scale animation to Pulse Suite buttons.",
+      "Bumped Pulse Suite updater channel to v1.0.1."
+    ]
+  },
+  {
     "version": "1.0.0",
     "date": "2026-08-27",
     "notes": [
