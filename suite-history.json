@@ -1,5 +1,16 @@
 [
   {
+    "version": "1.0.2",
+    "date": "2026-08-29",
+    "notes": [
+      "Added a clean launcher-style Home with dedicated Pulse Alarm, Pulse Calendar, Pulse Notes and Settings tiles",
+      "App tiles now open their Pulse app directly and show installed readiness at a glance",
+      "Moved Pulse Account, Workspace Status, Apps & Updates, Appearance, What's New and About into Settings",
+      "Removed Open buttons from Settings and replaced them with Install, Update or Updated states",
+      "Retained the built-in Pulse Suite updater and version history"
+    ]
+  },
+  {
     "version": "1.0.1",
     "date": "2026-08-27",
     "notes": [

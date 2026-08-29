@@ -1,8 +1,13 @@
 {
   "name": "Pulse Suite",
   "package": "com.pulse.suite.stable",
-  "version": "1.0.1",
-  "versionCode": 2,
+  "version": "1.0.2",
+  "versionCode": 3,
   "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Suite-Latest.apk",
-  "sha256": "2b6dd9e392bd0ef8c9c7eb97da2ef9ddaaad0605f08c02905670e9f74bd55f99"
+  "sha256": "3348434299fee75dae4bd2f55f4d0c6d046db80d610a935af180a4ad4385b822",
+  "notes": [
+    "Added a clean launcher-style Pulse Home with Alarm, Calendar, Notes and Settings tiles.",
+    "Moved account, workspace, app management, appearance and changelog controls into Settings.",
+    "Replaced Open controls in Settings with Install, Update and Updated states."
+  ]
 }
