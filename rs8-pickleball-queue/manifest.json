@@ -1,0 +1,13 @@
+{
+  "version": "1.3.16",
+  "min_version": "1.3.15",
+  "published_at": "September 1, 2026",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-pickleball-queue/latest.json",
+  "sha256": "123c3096b818a45d7bea08a131389c8ecf4ab4c6ad5f614e7a24fbfd79a792be",
+  "changelog": [
+    "System Update is now built into Settings.",
+    "Future releases can be checked and installed with Update Now — no Hostinger ZIP extraction.",
+    "Updates are checksum-verified and existing files are backed up automatically before replacement.",
+    "Recent Results now clearly highlights the winning team."
+  ]
+}
