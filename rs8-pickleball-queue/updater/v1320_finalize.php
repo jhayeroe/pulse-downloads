@@ -45,11 +45,11 @@ try{
     v1320f_write($appPath,$app);
     @file_put_contents($backup.'/finalized.json',json_encode(['version'=>'1.3.20','completed_at'=>date(DATE_ATOM),'backup'=>basename($backup)],JSON_PRETTY_PRINT));
     // Redirect before app.php continues with its already-parsed old constant. Next request loads v1.3.20 cleanly.
-    header('Location: ../settings.php?updated=1&finalized=1320#system-update',true,302);exit;
+    header('Location: settings.php?updated=1&finalized=1320#system-update',true,302);exit;
 }catch(Throwable $e){
     foreach(array_keys($backed) as $rel){$src=$backup.'/'.$rel;$dst=$root.'/'.$rel;if(is_file($src))@copy($src,$dst);}
     // Never leave a broken finalizer loop. Restore v1.3.18 app entrypoint without this temporary include.
     $appPath=$root.'/includes/app.php';if(is_file($appPath)){$app=(string)@file_get_contents($appPath);$app=str_replace($bootstrapLine,'',$app);@file_put_contents($appPath,$app,LOCK_EX);}
     error_log('RS8 v1.3.20 finalizer: '.$e->getMessage());
-    http_response_code(500);echo '<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font-family:system-ui;padding:24px;background:#111;color:#fff}.box{max-width:620px;margin:auto;background:#1b1b1b;padding:22px;border-radius:18px}a{color:#fff}</style><div class="box"><h2>RS8 Update Finalization Stopped</h2><p>No production file changes were kept. The site was restored to the previous version.</p><p><b>'.htmlspecialchars($e->getMessage(),ENT_QUOTES,'UTF-8').'</b></p><p><a href="../settings.php#system-update">Return to Settings</a></p></div>';exit;
+    http_response_code(500);echo '<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font-family:system-ui;padding:24px;background:#111;color:#fff}.box{max-width:620px;margin:auto;background:#1b1b1b;padding:22px;border-radius:18px}a{color:#fff}</style><div class="box"><h2>RS8 Update Finalization Stopped</h2><p>No production file changes were kept. The site was restored to the previous version.</p><p><b>'.htmlspecialchars($e->getMessage(),ENT_QUOTES,'UTF-8').'</b></p><p><a href="settings.php#system-update">Return to Settings</a></p></div>';exit;
 }
