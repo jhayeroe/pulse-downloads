@@ -1,13 +1,18 @@
 {
-  "version": "1.3.19",
+  "version": "1.3.20",
   "min_version": "1.3.18",
   "published_at": "September 1, 2026",
   "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-pickleball-queue/latest.json",
-  "sha256": "8e40db9384ed0493f13724ad093841e8f3b4a1c43460cf51a5a4983cda225399",
+  "sha256": "0192f70949b6db196c25e60e0c07e8c1490222c1947bc6a014a22caa343a4ea8",
   "changelog": [
-    "Philippine Standard Time (Asia/Manila, UTC+8) is now enforced across the app.",
-    "MySQL NOW() and CURRENT_TIMESTAMP now use UTC+8 for future match and session timestamps.",
-    "Live match timers and Recent Results stay aligned with actual Philippine court time.",
-    "Existing historical timestamps are preserved and are not silently rewritten."
+    "Consolidated update built directly for v1.3.18; v1.3.19 is skipped after its checksum failure.",
+    "Philippine Standard Time (Asia/Manila / UTC+8) is enforced for PHP and MySQL match timestamps.",
+    "Sports-360 style FIFO rotation: players who finish a match return to the end of the Queue.",
+    "Resting is removed from live rotation.",
+    "On Deck remains visible but editable until the match starts; admin can replace or shuffle players.",
+    "Public visitors can view confirmed Court 1 bookings and submit a schedule request pending Admin approval.",
+    "Schedule conflicts are shown to Admin; confirmed court time is still decided by Admin rather than automatically by submission order.",
+    "Duplicate full names are intercepted before creating a second profile, with Use Existing / Different Nickname / Discard choices.",
+    "Calendar Schedule Details and v1.3.18 active-match running time / recent-result timestamps are retained."
   ]
 }
