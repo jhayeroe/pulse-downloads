@@ -1,1 +1,59 @@
-{"format":"rs8-update-v1","version":"1.3.19","operations":[{"type":"replace_text","path":"includes/app.php","search":"date_default_timezone_set($config['timezone'] ?? 'Asia/Manila');","replace":"// RS8 court operations use Philippine Standard Time (UTC+8) regardless of hosting server location.\ndate_default_timezone_set('Asia/Manila');","expected":1},{"type":"replace_text","path":"includes/db.php","search":"    try { $pdo->exec(\"SET SESSION innodb_lock_wait_timeout=5\"); } catch (Throwable $e) {}","replace":"    try { $pdo->exec(\"SET SESSION innodb_lock_wait_timeout=5\"); } catch (Throwable $e) {}\n    // Keep MySQL NOW(), CURRENT_TIMESTAMP and TIMESTAMP reads aligned with Philippine Standard Time.\n    try { $pdo->exec(\"SET SESSION time_zone = '+08:00'\"); } catch (Throwable $e) {}","expected":1},{"type":"replace_text","path":"includes/app.php","search":"define('APP_VERSION','1.3.18')","replace":"define('APP_VERSION','1.3.19')","expected":1},{"type":"replace_text","path":"includes/header.php","search":"1.3.18","replace":"1.3.19","expected":5},{"type":"replace_text","path":"includes/footer.php","search":"1.3.18","replace":"1.3.19","expected":3},{"type":"replace_text","path":"assets/app.js","search":"1.3.18","replace":"1.3.19","expected":1},{"type":"replace_text","path":"sw.js","search":"1.3.18","replace":"1.3.19","expected":1},{"type":"replace_text","path":"settings.php","search":"$versions=[\n ['1.3.18'","replace":"$versions=[\n ['1.3.19','September 1, 2026',['Philippine Standard Time is now enforced across PHP and MySQL sessions','Match started_at and ended_at timestamps now use UTC+8 instead of the hosting server timezone','Live match timers and future Recent Results timestamps stay aligned with PH court time','Existing historical timestamps are preserved and are not silently rewritten']],\n ['1.3.18'","expected":1},{"type":"replace_text","path":"settings.php","search":"assets/icons/brand-128.png?v=1.3.18","replace":"assets/icons/brand-128.png?v=1.3.19","expected":1}],"sql":[]}
+{
+  "format": "rs8-update-v1",
+  "version": "1.3.20",
+  "operations": [
+    {
+      "type": "download_file",
+      "path": "includes/v1320.php",
+      "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/304a0f23fc984c81af0a3281aaa947d54da88c18/rs8-pickleball-queue/updater/v1320.php"
+    },
+    {
+      "type": "download_file",
+      "path": "player_edit_v1320.php",
+      "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/dd791738b1954ce40a488cf99dbc95cf88ed551c/rs8-pickleball-queue/updater/player_edit_v1320.php"
+    },
+    {
+      "type": "download_file",
+      "path": "manual_match_v1320.php",
+      "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/559b9b66ede51796f953bba393cef1c106f20153/rs8-pickleball-queue/updater/manual_match_v1320.php"
+    },
+    {
+      "type": "download_file",
+      "path": "request_schedule.php",
+      "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/1ea0c56344a76230fa6b5ad30790fb6c5bfe30dd/rs8-pickleball-queue/updater/request_schedule.php"
+    },
+    {
+      "type": "download_file",
+      "path": "includes/v1320_finalize.php",
+      "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/dae25096c0c3af35934e5497dceed85a944409a2/rs8-pickleball-queue/updater/v1320_finalize.php"
+    },
+    {
+      "type": "download_file",
+      "path": "includes/v1320_patch_queue1.php",
+      "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/6864c583f5225b23e97a910514fe29b4035ac1c5/rs8-pickleball-queue/updater/v1320_patch_queue1.php"
+    },
+    {
+      "type": "download_file",
+      "path": "includes/v1320_patch_queue2.php",
+      "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/22ed4bd59e47a00b30d5ed5facc118fb5a2db7c8/rs8-pickleball-queue/updater/v1320_patch_queue2.php"
+    },
+    {
+      "type": "download_file",
+      "path": "includes/v1320_patch_pages.php",
+      "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/8b0a31f8fcfc63eb188c1fc36f7bae88a805e4c3/rs8-pickleball-queue/updater/v1320_patch_pages.php"
+    },
+    {
+      "type": "download_file",
+      "path": "includes/v1320_patch_misc.php",
+      "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/e83a12ae75e8888610841e6f99dfcda600fbffcc/rs8-pickleball-queue/updater/v1320_patch_misc.php"
+    },
+    {
+      "type": "replace_text",
+      "path": "includes/app.php",
+      "search": "require __DIR__.'/functions.php';",
+      "replace": "require __DIR__.'/functions.php';\nrequire_once __DIR__.'/v1320_finalize.php';",
+      "expected": 1
+    }
+  ],
+  "sql": []
+}
