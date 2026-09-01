@@ -1,16 +1,14 @@
 {
-  "version": "1.3.23",
-  "min_version": "1.3.22",
+  "version": "1.3.24",
+  "min_version": "1.3.23",
   "published_at": "September 2, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/40acb199f42f6463b0d42315ea2d4548e2d59ccd/rs8-pickleball-queue/releases/v1.3.23.json",
-  "sha256": "827d32e12a0d78bf341a715dd41f8cb104da6dc2f8e6df4ddd41874ae235c02d",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/fb7584a3f47f8a413ccd4fd789b912f144b29735/rs8-pickleball-queue/releases/v1.3.24.json",
+  "sha256": "9e771aaa9757c8ba73ddcc77ca4ea1e934b23e3d351270fc31dba1cdebf35d54",
   "changelog": [
-    "Bookings is now grouped into Bookings, Pending Requests, and Past Bookings / Match History.",
-    "Bookings is available to non-admin users from the bottom navigation, with confirmed court time and Request a Court Slot.",
-    "Waiting Queue now shows visible #1, #2, #3 positions.",
-    "Resting is removed from the live queue and finished players return to the end of the Queue.",
-    "On Deck stays editable until match start and can still be shuffled.",
-    "Duplicate full names or nicknames are intercepted; use existing player, change nickname, or discard.",
-    "Drea Mateo Messenger is configured as the proof-of-payment destination for the booking/payment flow."
+    "Bookings UI rebuilt into compact mobile cards with clear date, time, type and status hierarchy.",
+    "Public bottom navigation is forced into one clean 4-item row: Home, Bookings, Queue and Settings.",
+    "Admin bottom navigation remains one clean 5-item row.",
+    "Drea proof-of-payment button now uses the Messenger thread route instead of the broken Facebook username-style link.",
+    "Existing booking, queue, duplicate-name and match-history behavior is preserved."
   ]
 }
