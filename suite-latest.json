@@ -13,14 +13,14 @@
       "key": "calendar",
       "name": "Pulse Calendar",
       "package": "com.pulse.calendar.stable",
-      "version": "1.3.4",
+      "version": "1.3.5",
       "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Calendar-Latest.apk"
     },
     {
       "key": "notes",
       "name": "Pulse Notes",
       "package": "com.pulse.notes.stable",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Notes-Latest.apk"
     }
   ]

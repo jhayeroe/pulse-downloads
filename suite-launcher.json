@@ -1,13 +1,14 @@
 {
   "name": "Pulse Suite",
   "package": "com.pulse.suite.stable",
-  "version": "1.0.2",
-  "versionCode": 3,
+  "version": "1.0.3",
+  "versionCode": 4,
   "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Suite-Latest.apk",
-  "sha256": "3348434299fee75dae4bd2f55f4d0c6d046db80d610a935af180a4ad4385b822",
+  "sha256": "1c3839cebd5624d24cb22f8859b233eb593de2a1bf4280cef377ef1ba3535442",
   "notes": [
-    "Added a clean launcher-style Pulse Home with Alarm, Calendar, Notes and Settings tiles.",
-    "Moved account, workspace, app management, appearance and changelog controls into Settings.",
-    "Replaced Open controls in Settings with Install, Update and Updated states."
+    "Added New Note, New Alarm and New Event shortcuts for the Android Home Screen.",
+    "Added the same three quick actions when long-pressing the Pulse Suite icon.",
+    "Added Home Screen shortcut management inside Pulse Suite Settings.",
+    "Shortcuts now route directly to each app's create screen and guide users to update missing companion support."
   ]
 }

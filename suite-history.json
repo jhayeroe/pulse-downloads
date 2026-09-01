@@ -1,5 +1,16 @@
 [
   {
+    "version": "1.0.3",
+    "date": "2026-09-01",
+    "notes": [
+      "Added New Note, New Alarm and New Event shortcuts that can be pinned individually to the Android Home Screen",
+      "Long-pressing the Pulse Suite icon now shows the same three quick-create actions",
+      "Added Home Screen Shortcuts controls inside Settings",
+      "Each shortcut routes directly to the matching create screen",
+      "Outdated or missing companion apps are detected and redirected to Apps & Updates"
+    ]
+  },
+  {
     "version": "1.0.2",
     "date": "2026-08-29",
     "notes": [
