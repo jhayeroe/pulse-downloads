@@ -1,18 +1,14 @@
 {
-  "version": "1.3.20",
-  "min_version": "1.3.18",
-  "published_at": "September 1, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-pickleball-queue/latest.json",
-  "sha256": "0aba429e33ab12e7cde4e1acf6a4076b05c008ee2557895f3deafb662db6820f",
+  "version": "1.3.21",
+  "min_version": "1.3.20",
+  "published_at": "September 2, 2026",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/6f2a3b1f70f137aed81377b80a781316e1bf8985/rs8-pickleball-queue/releases/v1.3.21.json",
+  "sha256": "bf7e745ac5343ce8fdfc24e2d9ba4df7d61989abe983df6d94f4a710dc7266c9",
   "changelog": [
-    "Consolidated update built directly for v1.3.18; v1.3.19 is skipped after its checksum failure.",
-    "Philippine Standard Time (Asia/Manila / UTC+8) is enforced for PHP and MySQL match timestamps.",
-    "Sports-360 style FIFO rotation: players who finish a match return to the end of the Queue.",
-    "Resting is removed from live rotation.",
-    "On Deck remains visible but editable until the match starts; admin can replace or shuffle players.",
-    "Public visitors can view confirmed Court 1 bookings and submit a schedule request pending Admin approval.",
-    "Schedule conflicts are shown to Admin; confirmed court time is still decided by Admin rather than automatically by submission order.",
-    "Duplicate full names are intercepted before creating a second profile, with Use Existing / Different Nickname / Discard choices.",
-    "Calendar Schedule Details and v1.3.18 active-match running time / recent-result timestamps are retained."
+    "Calendar Upcoming status dot is now yellow instead of red.",
+    "Past / saved Open Play sessions are clickable and open a complete Session History view.",
+    "Session History shows all completed games, players, scores, winners, actual timestamps and match duration.",
+    "Admin login can now stay signed in securely on the same device for 30 days.",
+    "Explicit Logout revokes the saved device login immediately; deactivated admin accounts remain blocked."
   ]
 }
