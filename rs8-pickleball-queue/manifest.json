@@ -1,14 +1,14 @@
 {
-  "version": "1.3.21",
+  "version": "1.3.22",
   "min_version": "1.3.20",
   "published_at": "September 2, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/6f2a3b1f70f137aed81377b80a781316e1bf8985/rs8-pickleball-queue/releases/v1.3.21.json",
-  "sha256": "bf7e745ac5343ce8fdfc24e2d9ba4df7d61989abe983df6d94f4a710dc7266c9",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/0c324430c80000664bc467302a42d3d1e6d794ed/rs8-pickleball-queue/releases/v1.3.22.json",
+  "sha256": "e6def75b917bb91e01bc2d49d87ed637ebe4c6f835ffa3fac09db5c567f23fc7",
   "changelog": [
-    "Calendar Upcoming status dot is now yellow instead of red.",
-    "Past / saved Open Play sessions are clickable and open a complete Session History view.",
-    "Session History shows all completed games, players, scores, winners, actual timestamps and match duration.",
-    "Admin login can now stay signed in securely on the same device for 30 days.",
-    "Explicit Logout revokes the saved device login immediately; deactivated admin accounts remain blocked."
+    "Corrective release built directly for v1.3.20; the failed v1.3.21 app.php text patch is skipped.",
+    "Settings is redesigned as a clean compact menu. Theme, Admin Account, System Update, Version History, App & Device and System Data open only when tapped.",
+    "Upcoming Calendar indicator is yellow instead of red.",
+    "Past / saved Open Play schedules are clickable and show completed games, players, scores, winners, timestamps and match duration.",
+    "Admin login is securely remembered on the same device for up to 30 days; explicit Logout revokes it."
   ]
 }
