@@ -1,14 +1,15 @@
 {
-  "version": "1.4.2",
-  "min_version": "1.4.0",
+  "version": "1.4.3",
+  "min_version": "1.4.2",
   "published_at": "September 2, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-pickleball-queue/releases/v1.4.2.json",
-  "sha256": "0ffe39f44ce4b6932352eb70434687b8ba6a28a527c8852f453ea2b9426d1dbd",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-pickleball-queue/releases/v1.4.3.json",
+  "sha256": "d4bfe44310515b4ff666e56c2a0f5e39b9a92f2486679c5f53fba034502536e4",
   "changelog": [
-    "Fixed update checksum publishing so the updater receives a real SHA-256 package hash.",
-    "0-0-2 has been removed from the bottom navigation and is now launched from the Home dashboard.",
-    "0-0-2 shot trajectories and contact timing remain tuned for easier, more natural rallies.",
-    "Bottom navigation returns to the cleaner standard Pickle Que layout.",
-    "Existing queue, bookings, calendar and settings behavior is preserved."
+    "0-0-2 rebuilt as a landscape mobile sports game.",
+    "Swipe controls and automatic positioning have been removed.",
+    "Added a left virtual joystick for full manual court movement and shot aiming.",
+    "Added dedicated Drive, Dink, Slice and Lob buttons on the right side.",
+    "Shot quality now depends on player position, distance to the ball and movement at contact.",
+    "0-0-2 remains launched from Home and is not added to bottom navigation."
   ]
 }
