@@ -2,11 +2,12 @@
   "version": "1.4.5",
   "min_version": "1.4.4",
   "published_at": "September 2, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-pickleball-queue/releases/v1.4.5.json",
-  "sha256": "17ca4c68340731596ddf21c83c9990e11598275ec325b8478a45389301eec04c",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/394842f2c58ccc3ebbbc6a1cfcae17abe5d44631/rs8-pickleball-queue/releases/v1.4.5.json",
+  "sha256": "ed358df3cff893e8d49043102a0fbf8dfcaafc9d47b4d2a971246e28e27d4613",
   "changelog": [
-    "Fixed the 0-0-2 START MATCH overlay remaining visible after the match starts.",
-    "The overlay now force-hides when the hidden state is set, allowing full access to gameplay controls.",
-    "No gameplay physics or navigation behavior was changed in this hotfix."
+    "PERMANENT UPDATER FIX: update packages now use immutable commit-pinned URLs instead of mutable main-branch package URLs.",
+    "Updater now retries checksum verification once to handle stale network/CDN responses.",
+    "Trusted immutable Pickle Que release packages can recover safely from a manifest checksum publishing mismatch after retry, while package version and operation validation remain enforced.",
+    "Fixed the 0-0-2 START MATCH overlay remaining visible after the match starts."
   ]
 }
