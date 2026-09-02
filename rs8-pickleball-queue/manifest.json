@@ -1,15 +1,13 @@
 {
-  "version": "1.4.3",
-  "min_version": "1.4.2",
+  "version": "1.4.4",
+  "min_version": "1.4.3",
   "published_at": "September 2, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-pickleball-queue/releases/v1.4.3.json",
-  "sha256": "d4bfe44310515b4ff666e56c2a0f5e39b9a92f2486679c5f53fba034502536e4",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-pickleball-queue/releases/v1.4.4.json",
+  "sha256": "476eec6983feaee9e50af025bd08e041f1f8192fa459a61ae393324551d883b0",
   "changelog": [
-    "0-0-2 rebuilt as a landscape mobile sports game.",
-    "Swipe controls and automatic positioning have been removed.",
-    "Added a left virtual joystick for full manual court movement and shot aiming.",
-    "Added dedicated Drive, Dink, Slice and Lob buttons on the right side.",
-    "Shot quality now depends on player position, distance to the ball and movement at contact.",
-    "0-0-2 remains launched from Home and is not added to bottom navigation."
+    "Fixed 0-0-2 incorrectly showing MATCH WON before a match was actually played.",
+    "Match scoring is now disabled until START MATCH has initialized a fresh game.",
+    "Added safeguards against duplicate point events and stale end-of-match state.",
+    "PLAY AGAIN now resets the score and match state cleanly."
   ]
 }
