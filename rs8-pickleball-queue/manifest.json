@@ -1,13 +1,14 @@
 {
-  "version": "1.4.5",
-  "min_version": "1.4.4",
+  "version": "1.5.0",
+  "min_version": "1.4.5",
   "published_at": "September 2, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/394842f2c58ccc3ebbbc6a1cfcae17abe5d44631/rs8-pickleball-queue/releases/v1.4.5.json",
-  "sha256": "ed358df3cff893e8d49043102a0fbf8dfcaafc9d47b4d2a971246e28e27d4613",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/d9e1f9544b3e9dbe0087f307d3e83386bbb70378/rs8-pickleball-queue/releases/v1.5.0.json",
+  "sha256": "f6d1b76f64deb4575aae285c976fd817cf8283442bfb5b8bc15c8a592e27b827",
   "changelog": [
-    "PERMANENT UPDATER FIX: update packages now use immutable commit-pinned URLs instead of mutable main-branch package URLs.",
-    "Updater now retries checksum verification once to handle stale network/CDN responses.",
-    "Trusted immutable Pickle Que release packages can recover safely from a manifest checksum publishing mismatch after retry, while package version and operation validation remain enforced.",
-    "Fixed the 0-0-2 START MATCH overlay remaining visible after the match starts."
+    "0-0-2 gameplay rebuilt from the ground up around a clean racket-sports game concept inspired by Smashing Feathers.",
+    "Removed the joystick and four-button control layout in favor of automatic footwork plus swipe-based shot control.",
+    "Added perspective pickleball court, automatic player positioning, timing-based contact, directional aiming and shot classification.",
+    "Short input produces a dink, upward swipes produce drops or lobs, side swipes create slices/angles, and long swipes drive the ball.",
+    "Added new rally AI, ball bounce and net interactions, scoring, swing feedback and cleaner portrait sports-game presentation."
   ]
 }
