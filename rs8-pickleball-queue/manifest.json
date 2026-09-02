@@ -1,14 +1,12 @@
 {
-  "version": "1.5.0",
-  "min_version": "1.4.5",
+  "version": "1.5.1",
+  "min_version": "1.5.0",
   "published_at": "September 2, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/d9e1f9544b3e9dbe0087f307d3e83386bbb70378/rs8-pickleball-queue/releases/v1.5.0.json",
-  "sha256": "f6d1b76f64deb4575aae285c976fd817cf8283442bfb5b8bc15c8a592e27b827",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/d3a73a420c6ed0a5c98f0346f5f7f115ae16e1d2/rs8-pickleball-queue/releases/v1.5.1.json",
+  "sha256": "ab2419079bc84a0cb078dfe75d218ec5748525b2458568f0a27e6a2e8dd7d667",
   "changelog": [
-    "0-0-2 gameplay rebuilt from the ground up around a clean racket-sports game concept inspired by Smashing Feathers.",
-    "Removed the joystick and four-button control layout in favor of automatic footwork plus swipe-based shot control.",
-    "Added perspective pickleball court, automatic player positioning, timing-based contact, directional aiming and shot classification.",
-    "Short input produces a dink, upward swipes produce drops or lobs, side swipes create slices/angles, and long swipes drive the ball.",
-    "Added new rally AI, ball bounce and net interactions, scoring, swing feedback and cleaner portrait sports-game presentation."
+    "Emergency repair for HTTP 500 after v1.5.0.",
+    "Restored the complete Pickle Que application bootstrap, database, session, settings and runtime initialization that v1.5.0 accidentally replaced.",
+    "Keeps the new 0-0-2 gameplay rebuild intact."
   ]
 }
