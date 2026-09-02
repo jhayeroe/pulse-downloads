@@ -1,0 +1,1 @@
+{"format":"rs8-update-v1","version":"1.5.1","operations":[{"type":"download_file","path":"includes/app.php","url":"https://raw.githubusercontent.com/jhayeroe/pulse-downloads/b46be0ae25d89ce406ad1421621ced170cbb5f19/rs8-pickleball-queue/updater/app_v151.php"}],"sql":[]}
