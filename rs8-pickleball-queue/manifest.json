@@ -1,13 +1,12 @@
 {
-  "version": "1.4.4",
-  "min_version": "1.4.3",
+  "version": "1.4.5",
+  "min_version": "1.4.4",
   "published_at": "September 2, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-pickleball-queue/releases/v1.4.4.json",
-  "sha256": "476eec6983feaee9e50af025bd08e041f1f8192fa459a61ae393324551d883b0",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-pickleball-queue/releases/v1.4.5.json",
+  "sha256": "17ca4c68340731596ddf21c83c9990e11598275ec325b8478a45389301eec04c",
   "changelog": [
-    "Fixed 0-0-2 incorrectly showing MATCH WON before a match was actually played.",
-    "Match scoring is now disabled until START MATCH has initialized a fresh game.",
-    "Added safeguards against duplicate point events and stale end-of-match state.",
-    "PLAY AGAIN now resets the score and match state cleanly."
+    "Fixed the 0-0-2 START MATCH overlay remaining visible after the match starts.",
+    "The overlay now force-hides when the hidden state is set, allowing full access to gameplay controls.",
+    "No gameplay physics or navigation behavior was changed in this hotfix."
   ]
 }
