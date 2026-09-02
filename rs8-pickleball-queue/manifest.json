@@ -1,14 +1,14 @@
 {
-  "version": "1.4.1",
+  "version": "1.4.2",
   "min_version": "1.4.0",
   "published_at": "September 2, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-pickleball-queue/releases/v1.4.1.json",
-  "sha256": "0-0-2-gameplay-hotfix-v1.4.1",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-pickleball-queue/releases/v1.4.2.json",
+  "sha256": "0ffe39f44ce4b6932352eb70434687b8ba6a28a527c8852f453ea2b9426d1dbd",
   "changelog": [
-    "0-0-2 gameplay hotfix: corrected overly low shot trajectories that caused excessive net hits.",
-    "Drive, Drop and Dink shots now have more natural net clearance while still allowing genuine errors.",
-    "Contact timing window is more forgiving for smoother mobile rallies.",
-    "Opponent return trajectory and rally consistency were tuned.",
-    "All existing Pickle Que v1.4.0 queue, bookings, navigation and settings features are preserved."
+    "Fixed update checksum publishing so the updater receives a real SHA-256 package hash.",
+    "0-0-2 has been removed from the bottom navigation and is now launched from the Home dashboard.",
+    "0-0-2 shot trajectories and contact timing remain tuned for easier, more natural rallies.",
+    "Bottom navigation returns to the cleaner standard Pickle Que layout.",
+    "Existing queue, bookings, calendar and settings behavior is preserved."
   ]
 }
