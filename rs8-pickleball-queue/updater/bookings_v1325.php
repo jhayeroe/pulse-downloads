@@ -1,0 +1,43 @@
+<?php
+require __DIR__.'/includes/app.php';
+$admin=isAdmin();$activePage='schedules';$pageTitle='Bookings - RS8 Pickleball';
+$upcoming=[];$history=[];$requests=[];
+try{$upcoming=upcomingScheduledSessions($pdo,80);}catch(Throwable $e){}
+if($admin){try{$history=recentSessions($pdo,40);}catch(Throwable $e){}try{$requests=v1320PendingRequests($pdo,50);}catch(Throwable $e){}}
+function bookingDateBits1325(string $date): array {$ts=strtotime($date);return [strtoupper(date('M',$ts)),date('j',$ts),date('D',$ts),date('F j, Y',$ts)];}
+$byDate=[];foreach($upcoming as $s){$byDate[$s['scheduled_date']][]=$s;}ksort($byDate);
+$selectedDate=trim((string)($_GET['date']??''));if($selectedDate!==''&&!isset($byDate[$selectedDate]))$selectedDate='';
+require __DIR__.'/includes/header.php';
+?>
+<div class="page-title title-with-action"><div><h1>Bookings</h1><p><?=$admin?'Confirmed court time, pending requests and saved history.':'Choose a date to see occupied Court 1 times, then request an available slot.'?></p></div><?php if($admin):?><a class="mini primary add-top" href="schedule_edit.php">+ ADD</a><?php endif;?></div>
+
+<?php if(!$admin):?>
+<div class="booking-date-browser">
+<?php if($selectedDate===''):?>
+<section class="section"><div class="section-head"><h2>CHOOSE A DATE</h2><span class="count"><?=count($byDate)?> DATE<?=count($byDate)===1?'':'S'?></span></div>
+<div class="booking-date-grid">
+<?php if(!$byDate):?><div class="card empty">No confirmed upcoming bookings yet.<br><br><a class="btn" href="request_schedule.php">REQUEST A COURT SLOT</a></div><?php endif;?>
+<?php foreach($byDate as $date=>$slots):[$mon,$day,$dow,$full]=bookingDateBits1325($date);?><a class="booking-date-card" href="bookings.php?date=<?=esc($date)?>"><div class="booking-datebox large"><span><?=$mon?></span><b><?=$day?></b><small><?=$dow?></small></div><div class="booking-date-copy"><b><?=$full?></b><small><?=count($slots)?> booked time<?=count($slots)===1?'':'s'?></small></div><span class="booking-date-arrow">›</span></a><?php endforeach;?>
+</div></section>
+<section class="section"><a class="btn ghost" href="request_schedule.php">REQUEST A DIFFERENT DATE</a></section>
+<?php else:$slots=$byDate[$selectedDate]??[];[$mon,$day,$dow,$full]=bookingDateBits1325($selectedDate);?>
+<section class="section"><div class="selected-booking-date"><a class="mini ghost" href="bookings.php">‹ DATES</a><div><div class="eyebrow">COURT 1</div><h2><?=$full?></h2><p class="meta">These time ranges are already occupied.</p></div></div>
+<div class="booked-slot-list">
+<?php foreach($slots as $s):$state=scheduleDisplayState($s);?><div class="booked-slot-card"><div class="booked-slot-time"><b><?=prettyTime($s['scheduled_time'])?></b><span>to</span><b><?=prettyTime($s['scheduled_end_time'])?></b></div><div class="booked-slot-copy"><span class="eyebrow"><?=esc(strtoupper(scheduleTypeLabel($s['schedule_type']??'open_play')))?></span><b><?=isCourtRental($s)?'Reserved Court Time':esc($s['name'])?></b><small>Court 1</small></div><span class="pill <?=$state==='ongoing'?'live':'upcoming-pill'?>"><?=esc(scheduleDisplayLabel($s))?></span></div><?php endforeach;?>
+</div>
+<a class="btn booking-request-date" href="request_schedule.php?date=<?=esc($selectedDate)?>">REQUEST A SLOT FOR <?=strtoupper(date('M j',strtotime($selectedDate)))?></a>
+<div class="hint center">Your request remains pending until an RS8 Admin approves it. Existing bookings are not automatically displaced.</div>
+</section>
+<?php endif;?>
+</div>
+<?php else:?>
+<div class="booking-groups booking-groups-v2">
+<details class="booking-group booking-group-v2" open><summary><span class="booking-summary-copy"><b>BOOKINGS</b><small>Upcoming / confirmed court time</small></span><span class="count"><?=count($upcoming)?> UPCOMING</span></summary><div class="booking-group-body booking-list-v2">
+<?php if(!$upcoming):?><div class="empty">No confirmed upcoming court bookings.</div><?php endif;?>
+<?php foreach($upcoming as $s):$state=scheduleDisplayState($s);[$mon,$day,$dow,$full]=bookingDateBits1325($s['scheduled_date']);?><a class="booking-card-v2" href="schedule_view.php?id=<?=(int)$s['id']?>"><div class="booking-datebox"><span><?=$mon?></span><b><?=$day?></b><small><?=$dow?></small></div><div class="booking-main"><div class="booking-topline"><span class="eyebrow"><?=esc(strtoupper(scheduleTypeLabel($s['schedule_type']??'open_play')))?></span><span class="pill <?=$state==='ongoing'?'live':'upcoming-pill'?>"><?=esc(scheduleDisplayLabel($s))?></span></div><b class="booking-title-v2"><?=isCourtRental($s)?'Court Rental • Reserved':esc($s['name'])?></b><small><?=prettyTime($s['scheduled_time'])?>–<?=prettyTime($s['scheduled_end_time'])?> • Court 1</small></div></a><?php endforeach;?>
+</div></details>
+<details class="booking-group booking-group-v2"><summary><span class="booking-summary-copy"><b>PENDING REQUESTS</b><small>Public requests waiting for Admin review</small></span><span class="count"><?=count($requests)?> PENDING</span></summary><div class="booking-group-body booking-list-v2"><?php if(!$requests):?><div class="empty">No pending public schedule requests.</div><?php endif;?><?php foreach($requests as $r):$conf=v1320RequestConflict($pdo,$r);[$mon,$day,$dow,$full]=bookingDateBits1325($r['requested_date']);?><div class="booking-card-v2"><div class="booking-datebox"><span><?=$mon?></span><b><?=$day?></b><small><?=$dow?></small></div><div class="booking-main"><div class="booking-topline"><span class="eyebrow"><?=esc(strtoupper(scheduleTypeLabel($r['schedule_type'])))?> REQUEST</span><span class="pill <?=$conf?'warning-pill':'upcoming-pill'?>"><?=$conf?'CONFLICT':'PENDING'?></span></div><b class="booking-title-v2"><?=esc($r['request_name']?:$r['requester_name'])?></b><small><?=prettyTime($r['requested_time'])?>–<?=prettyTime($r['requested_end_time'])?> • <?=esc($r['requester_name'])?></small></div></div><?php endforeach;?><a class="btn ghost" href="schedules.php">REVIEW / APPROVE REQUESTS</a></div></details>
+<details class="booking-group booking-group-v2"><summary><span class="booking-summary-copy"><b>PAST BOOKINGS / MATCH HISTORY</b><small>Completed rentals and Open Play sessions</small></span><span class="count"><?=count($history)?> SAVED</span></summary><div class="booking-group-body booking-list-v2"><?php if(!$history):?><div class="empty">No saved booking history yet.</div><?php endif;?><?php foreach($history as $h):[$mon,$day,$dow,$full]=bookingDateBits1325($h['scheduled_date']);?><a class="booking-card-v2" href="schedule_view.php?id=<?=(int)$h['id']?>"><div class="booking-datebox ended"><span><?=$mon?></span><b><?=$day?></b><small><?=$dow?></small></div><div class="booking-main"><div class="booking-topline"><span class="eyebrow"><?=esc(strtoupper(scheduleTypeLabel($h['schedule_type']??'open_play')))?></span><span class="pill ended-pill">HISTORY</span></div><b class="booking-title-v2"><?=esc($h['name'])?></b><small><?=isCourtRental($h)?esc(rentalPaymentStatus($h)):(int)$h['match_count'].' completed matches'?></small></div></a><?php endforeach;?></div></details>
+</div>
+<?php endif;?>
+<?php require __DIR__.'/includes/footer.php';
