@@ -1,0 +1,35 @@
+<?php
+require __DIR__.'/includes/app.php';require_once __DIR__.'/includes/update.php';
+$admin=isAdmin();
+try{
+ if($_SERVER['REQUEST_METHOD']==='POST'){
+  $action=(string)($_POST['action']??'');
+  if($action==='appearance'){
+   if(!$admin)throw new Exception('Admin login required for account appearance.');verifyCsrf();$mode=(string)($_POST['appearance_mode']??'light');if(!in_array($mode,['light','dark'],true))$mode='light';saveAdminPreferences($pdo,['appearance_mode'=>$mode]);flashSet('ok',ucfirst($mode).' mode saved.');go('settings.php');
+  }
+  if($action==='theme'){
+   requireAdmin();verifyCsrf();$preset=(string)($_POST['preset']??'RS8');$maps=['RS8'=>['#D71920','#FFFFFF','#111111'],'Nanomoly'=>['#D4AF37','#111111','#FFD400'],'SRF'=>['#1769E0','#FFFFFF','#FFD400']];$colors=$maps[$preset]??[$_POST['primary_color']??'#D71920',$_POST['secondary_color']??'#FFFFFF',$_POST['accent_color']??'#111111'];foreach($colors as $c)if(!preg_match('/^#[0-9A-Fa-f]{6}$/',(string)$c))throw new Exception('Invalid color.');if(!isset($maps[$preset]))$preset='Custom';saveAdminPreferences($pdo,['theme_name'=>$preset,'primary_color'=>$colors[0],'secondary_color'=>$colors[1],'accent_color'=>$colors[2]]);flashSet('ok','Theme saved for your admin account.');go('settings.php');
+  }
+  if($action==='apply_system_update'){
+   requireAdmin();verifyCsrf();$m=rs8FetchUpdateManifest();if(!rs8UpdateAvailable($m)){flashSet('ok','Already up to date.');go('settings.php?check_update=1');}$r=rs8ApplyUpdate($pdo,$m);flashSet('ok','Updated successfully to v'.$r['version'].'.');go('settings.php?updated=1');
+  }
+ }
+}catch(Throwable $e){flashSet('err',$e->getMessage());go('settings.php');}
+$latest=null;$updateError='';if(isset($_GET['check_update'])||$admin){try{$latest=rs8FetchUpdateManifest();}catch(Throwable $e){$updateError=$e->getMessage();}}
+$settings=settings($pdo);$activePage='settings';$pageTitle='Settings - RS8 Pickleball';require __DIR__.'/includes/header.php';
+?>
+<div class="page-title"><h1>Settings</h1><p>Compact controls for your app, account and software.</p></div>
+<div class="settings-hub settings-hub-v140">
+<section class="card settings-panel-v140"><div class="settings-panel-head"><div><div class="eyebrow">SOFTWARE</div><h2>System Update</h2></div><span class="pill">v<?=APP_VERSION?></span></div>
+<?php if($latest):?><div class="update-status-v140"><div><span>LATEST</span><b>v<?=esc($latest['version'])?></b></div><div><span>STATUS</span><b><?=rs8UpdateAvailable($latest)?'UPDATE AVAILABLE':'UP TO DATE'?></b></div></div><?php if(!empty($latest['changelog'])):?><div class="update-notes-v140"><b>What's new</b><?php foreach(array_slice($latest['changelog'],0,6) as $note):?><div>• <?=esc((string)$note)?></div><?php endforeach;?></div><?php endif;?><?php elseif($updateError!==''):?><div class="notice warning"><?=esc($updateError)?></div><?php else:?><div class="hint">Check the official RS8 update channel for the latest version.</div><?php endif;?>
+<div class="stack"><?php if(!$latest):?><a class="btn ghost" href="settings.php?check_update=1">CHECK FOR UPDATE</a><?php elseif($admin&&rs8UpdateAvailable($latest)):?><form method="post"><?=csrfField()?><input type="hidden" name="action" value="apply_system_update"><button class="btn">UPDATE NOW</button></form><?php elseif(!$admin&&$latest&&rs8UpdateAvailable($latest)):?><div class="notice info">An update is available. An Admin must install server updates.</div><a class="btn ghost" href="settings.php?check_update=1">REFRESH STATUS</a><?php else:?><a class="btn ghost" href="settings.php?check_update=1">CHECK AGAIN</a><?php endif;?></div></section>
+
+<section class="card settings-panel-v140"><div class="settings-panel-head"><div><div class="eyebrow">PLAY</div><h2>0-0-2 Mini Game</h2></div><span class="pill live">NEW</span></div><p class="meta">Practice timing, placement and paddle feel directly inside Pickle Que.</p><a class="btn ghost" href="002.php">OPEN 0-0-2</a></section>
+
+<section class="card settings-panel-v140"><div class="settings-panel-head"><div><div class="eyebrow">APPEARANCE</div><h2>Theme & Display</h2></div></div><?php if($admin):?><form method="post" class="appearance-switch"><?=csrfField()?><input type="hidden" name="action" value="appearance"><button name="appearance_mode" value="light" class="appearance-option <?=($settings['appearance_mode']??'light')==='light'?'selected':''?>"><span>☀</span><b>Light</b></button><button name="appearance_mode" value="dark" class="appearance-option <?=($settings['appearance_mode']??'light')==='dark'?'selected':''?>"><span>◐</span><b>Dark</b></button></form><form method="post" class="form compact-theme-v140"><?=csrfField()?><input type="hidden" name="action" value="theme"><label>Color Theme</label><select name="preset"><option <?=$settings['theme_name']==='RS8'?'selected':''?>>RS8</option><option <?=$settings['theme_name']==='Nanomoly'?'selected':''?>>Nanomoly</option><option <?=$settings['theme_name']==='SRF'?'selected':''?>>SRF</option><option <?=$settings['theme_name']==='Custom'?'selected':''?>>Custom</option></select><div class="three-colors"><input type="color" name="primary_color" value="<?=esc($settings['primary_color'])?>"><input type="color" name="secondary_color" value="<?=esc($settings['secondary_color'])?>"><input type="color" name="accent_color" value="<?=esc($settings['accent_color'])?>"></div><button class="btn ghost">SAVE THEME</button></form><?php else:?><div class="appearance-switch"><button type="button" class="appearance-option" data-local-appearance="light"><span>☀</span><b>Light</b></button><button type="button" class="appearance-option" data-local-appearance="dark"><span>◐</span><b>Dark</b></button></div><?php endif;?></section>
+
+<?php if($admin):?><section class="card settings-panel-v140"><div class="settings-panel-head"><div><div class="eyebrow">ADMIN</div><h2>Admin Account</h2></div><span class="pill admin-pill"><?=esc(adminUsername()??'ADMIN')?></span></div><div class="stack"><a class="btn ghost" href="admins.php">MANAGE ADMINS</a><a class="btn danger" href="logout.php">LOG OUT</a></div></section><?php else:?><section class="card settings-panel-v140"><div class="settings-panel-head"><div><div class="eyebrow">MANAGEMENT</div><h2>Admin Access</h2></div></div><a class="btn ghost" href="login.php">ADMIN LOGIN</a></section><?php endif;?>
+
+<section class="card settings-panel-v140"><div class="settings-panel-head"><div><div class="eyebrow">VERSION</div><h2>Version History</h2></div></div><details class="version-details-v140"><summary>View recent changes</summary><div class="version-list-v140"><b>v1.4.0</b><span>0-0-2 mini game, date-first public Bookings, one-row navigation, public update status.</span><b>v1.3.24</b><span>Bookings UI repair and Messenger routing.</span><b>v1.3.23</b><span>Numbered Queue, editable On Deck, duplicate protection, public Bookings.</span><b>v1.3.20</b><span>PH time, FIFO queue rotation, public schedule requests.</span></div></details></section>
+</div>
+<?php require __DIR__.'/includes/footer.php';
