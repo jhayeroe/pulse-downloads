@@ -1,14 +1,16 @@
 {
-  "version": "1.3.26",
-  "min_version": "1.3.25",
+  "version": "1.4.0",
+  "min_version": "1.3.24",
   "published_at": "September 2, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/d434a2e4e9bdda574dd98c7e0d849821099c2365/rs8-pickleball-queue/releases/v1.3.26.json",
-  "sha256": "fa0dbe9423427d1811c74d1af8e5e90db00e69bb5b2f07853dcecbcf14edc1ca",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/aaaa8f4daca4ec23fb0f2603ad821ee12f6cb93d/rs8-pickleball-queue/releases/v1.4.0.json",
+  "sha256": "eec4dd74ba7b76ff8812cd1f4355123334ee57965752e6757d4e9adf5897b5c7",
   "changelog": [
-    "Public Bookings is now date-first instead of showing every reservation as a separate top-level card.",
-    "Tap a date such as Sep 3 to see all confirmed occupied Court 1 time ranges for that date.",
-    "A Request a Slot button appears directly below the selected date's booked times.",
-    "The selected booking date is prefilled automatically in the public request form.",
-    "Existing Admin booking/history workflow and the v1.3.25 0-0-2 mini game are preserved."
+    "Major v1.4.0 release: 0-0-2 mini game is bundled directly into Pickle Que.",
+    "Direct upgrade path from v1.3.24; broken v1.3.25/v1.3.26 checksum path is skipped.",
+    "Public navigation is forced into one row: Home, Bookings, Queue, 0-0-2 and Settings.",
+    "Admin navigation is one row with Home, Bookings, Queue, 0-0-2, Calendar and Settings.",
+    "Public Settings can check and view System Update status; installation remains Admin-only for server security.",
+    "Public Bookings is date-first: open a date to see occupied time ranges, then request a slot with that date prefilled.",
+    "Existing queue rotation, editable On Deck, duplicate protection, match timing/history and PH time behavior are preserved."
   ]
 }
