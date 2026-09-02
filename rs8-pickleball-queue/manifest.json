@@ -1,12 +1,13 @@
 {
-  "version": "1.5.1",
-  "min_version": "1.5.0",
+  "version": "1.5.2",
+  "min_version": "1.5.1",
   "published_at": "September 2, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/d3a73a420c6ed0a5c98f0346f5f7f115ae16e1d2/rs8-pickleball-queue/releases/v1.5.1.json",
-  "sha256": "ab2419079bc84a0cb078dfe75d218ec5748525b2458568f0a27e6a2e8dd7d667",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/890637faefc4f902125d8c4914b9127db7658dd1/rs8-pickleball-queue/releases/v1.5.2.json",
+  "sha256": "043b424a92bd951f7bd1bb4efcb33033c58adad740ff05dce8e716546e91dc7f",
   "changelog": [
-    "Emergency repair for HTTP 500 after v1.5.0.",
-    "Restored the complete Pickle Que application bootstrap, database, session, settings and runtime initialization that v1.5.0 accidentally replaced.",
-    "Keeps the new 0-0-2 gameplay rebuild intact."
+    "Restored the agreed 0-0-2 landscape gameplay instead of the old auto-footwork swipe prototype.",
+    "Player movement is manual again using the left virtual joystick.",
+    "Restored DRIVE, DINK, SLICE and LOB shot buttons on the right side.",
+    "Retains the Start Match overlay fix and guarded match scoring from the previous hotfix."
   ]
 }
