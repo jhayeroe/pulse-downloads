@@ -1,14 +1,14 @@
 {
-  "version": "1.5.4",
-  "min_version": "1.5.3",
+  "version": "1.5.5",
+  "min_version": "1.5.4",
   "published_at": "September 3, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/0d3f8dae65dbaa889378d7cc61d72e2a4875c837/rs8-pickleball-queue/releases/v1.5.4.json",
-  "sha256": "63cb0c6611fb8f196518d3c0d6656f801789123df79701f5c383b047c631a01c",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/1c37b16a67175e68f4158b75c33dfb2ed533d233/rs8-pickleball-queue/releases/v1.5.5.json",
+  "sha256": "b80983756238c000eb3ea93e01e76b6fe565dfc9c338fe299880c0597b80235a",
   "changelog": [
-    "Bookings list is clean again: no Cancel or Delete buttons are shown directly on booking cards.",
-    "Tap an upcoming booking to open Booking Details; Cancel Booking appears only inside that booking.",
-    "Tap a cancelled booking to open Booking Details; Delete Booking appears only inside that cancelled booking.",
-    "Delete remains blocked until a booking has been cancelled first.",
-    "Calendar day popup and the latest 0-0-2 gameplay are preserved."
+    "Admin Bookings are now grouped by date instead of showing every upcoming booking as a separate top-level card.",
+    "Tap a date such as September 3 to expand or collapse all bookings scheduled on that date.",
+    "Each booking inside an expanded date remains tappable and opens Booking Details.",
+    "Cancel Booking remains available only inside an upcoming booking's details, and Delete Booking remains available only inside a cancelled booking's details.",
+    "Calendar day popup, public date-first Bookings and the latest 0-0-2 gameplay are preserved."
   ]
 }
