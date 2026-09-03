@@ -2,13 +2,13 @@
   "version": "1.5.6",
   "min_version": "1.5.5",
   "published_at": "September 3, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/986ded6f097a171da3101cfad5083aacae9bf30b/rs8-pickleball-queue/releases/v1.5.6.json",
-  "sha256": "1310aaa89e97a65a0aa73bde5776db0a638277fab8630778964fe9b9c3f557bf",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/cb7087f851a096750676fa68c41f72e2e2b4c7c7/rs8-pickleball-queue/releases/v1.5.6.json",
+  "sha256": "9ba0aea7b40b6807d73e9e9ca4aec8e6990617ba7b0b85edc50b761145f9cbd5",
   "changelog": [
-    "Public bottom navigation is forced into one compact row with exactly four equal buttons: Home, Bookings, Queue and Settings.",
-    "Admin bottom navigation stays in one row with five equal buttons including Calendar.",
-    "Bookings spacing, cards and grouped-date panels are tightened for cleaner mobile viewing.",
-    "Drea proof-of-payment destination now uses the Messenger thread route instead of the Facebook URL that could be interpreted as a username.",
-    "All v1.5.5 grouped Bookings, Calendar and 0-0-2 updates are preserved."
+    "Public bottom navigation is hard-fixed to one row with exactly Home, Bookings, Queue and Settings.",
+    "Admin navigation remains one row with five buttons including Calendar.",
+    "Bookings layout receives additional mobile overflow and spacing protection so cards and headings stay compressed cleanly.",
+    "Drea proof-of-payment link now opens the Facebook Messages thread directly instead of the broken username-style Messenger route.",
+    "Existing grouped-by-date Bookings, booking details, cancellation flow and match history are preserved."
   ]
 }
