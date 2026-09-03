@@ -1,13 +1,14 @@
 {
-  "version": "1.5.2",
-  "min_version": "1.5.1",
-  "published_at": "September 2, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/890637faefc4f902125d8c4914b9127db7658dd1/rs8-pickleball-queue/releases/v1.5.2.json",
-  "sha256": "043b424a92bd951f7bd1bb4efcb33033c58adad740ff05dce8e716546e91dc7f",
+  "version": "1.5.3",
+  "min_version": "1.4.0",
+  "published_at": "September 3, 2026",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/6d2dc4f3bb692e04ae69658e69a2756ab9b30c4f/rs8-pickleball-queue/releases/v1.5.3.json",
+  "sha256": "ae1fe72a46f7fb562acf16d7a1721665ad4f2bf9f3f5acea398013324398a353",
   "changelog": [
-    "Restored the agreed 0-0-2 landscape gameplay instead of the old auto-footwork swipe prototype.",
-    "Player movement is manual again using the left virtual joystick.",
-    "Restored DRIVE, DINK, SLICE and LOB shot buttons on the right side.",
-    "Retains the Start Match overlay fix and guarded match scoring from the previous hotfix."
+    "Calendar dates are now tappable and open a popup showing every booking on that day, so +1/+2 entries are no longer hidden.",
+    "Calendar day popup shows booking type, name, time range and status, with direct access to booking details.",
+    "Upcoming bookings now have a Cancel Booking action; cancelling immediately frees the court slot.",
+    "Cancelled bookings are kept in a separate Cancelled Bookings group and can then be permanently deleted.",
+    "Latest 0-0-2 landscape gameplay from v1.5.2 is preserved in this consolidated update."
   ]
 }
