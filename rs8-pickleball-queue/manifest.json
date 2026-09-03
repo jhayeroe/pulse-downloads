@@ -1,14 +1,14 @@
 {
-  "version": "1.5.3",
-  "min_version": "1.4.0",
+  "version": "1.5.4",
+  "min_version": "1.5.3",
   "published_at": "September 3, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/6d2dc4f3bb692e04ae69658e69a2756ab9b30c4f/rs8-pickleball-queue/releases/v1.5.3.json",
-  "sha256": "ae1fe72a46f7fb562acf16d7a1721665ad4f2bf9f3f5acea398013324398a353",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/0d3f8dae65dbaa889378d7cc61d72e2a4875c837/rs8-pickleball-queue/releases/v1.5.4.json",
+  "sha256": "63cb0c6611fb8f196518d3c0d6656f801789123df79701f5c383b047c631a01c",
   "changelog": [
-    "Calendar dates are now tappable and open a popup showing every booking on that day, so +1/+2 entries are no longer hidden.",
-    "Calendar day popup shows booking type, name, time range and status, with direct access to booking details.",
-    "Upcoming bookings now have a Cancel Booking action; cancelling immediately frees the court slot.",
-    "Cancelled bookings are kept in a separate Cancelled Bookings group and can then be permanently deleted.",
-    "Latest 0-0-2 landscape gameplay from v1.5.2 is preserved in this consolidated update."
+    "Bookings list is clean again: no Cancel or Delete buttons are shown directly on booking cards.",
+    "Tap an upcoming booking to open Booking Details; Cancel Booking appears only inside that booking.",
+    "Tap a cancelled booking to open Booking Details; Delete Booking appears only inside that cancelled booking.",
+    "Delete remains blocked until a booking has been cancelled first.",
+    "Calendar day popup and the latest 0-0-2 gameplay are preserved."
   ]
 }
