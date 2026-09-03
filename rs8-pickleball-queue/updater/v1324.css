@@ -1,0 +1,54 @@
+/* RS8 Pickleball Queue v1.3.24 - Bookings UI + fixed mobile nav */
+
+/* Bottom navigation: never wrap. Guest = 4 equal columns; admin = 5 equal columns. */
+.bottom-nav{left:0;right:0;width:100%;overflow:hidden}
+.bottom-inner{display:grid!important;width:100%!important;max-width:760px;margin:0 auto;align-items:end;gap:0!important;flex-wrap:nowrap!important}
+.bottom-inner.guest-nav{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.bottom-inner.admin-nav{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.bottom-inner .nav-item{min-width:0!important;width:auto!important;padding:8px 2px 10px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-end!important;gap:4px!important;white-space:nowrap;font-size:11px!important;line-height:1.05!important}
+.bottom-inner .nav-item .ico{width:27px;height:27px;display:grid;place-items:center;flex:0 0 auto}
+.bottom-inner .nav-item.queue-center{transform:none!important}
+.bottom-inner .nav-item.queue-center .queue-ico{width:58px!important;height:58px!important;margin-top:-24px!important;margin-bottom:1px!important}
+.bottom-inner .nav-item.queue-center .queue-ico img{width:58px!important;height:58px!important;object-fit:contain}
+@media(max-width:360px){.bottom-inner .nav-item{font-size:10px!important}.bottom-inner .nav-item.queue-center .queue-ico,.bottom-inner .nav-item.queue-center .queue-ico img{width:52px!important;height:52px!important}}
+
+/* Bookings page */
+.bookings-page{padding:0 16px 118px;max-width:760px;margin:0 auto}
+.bookings-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin:8px 0 18px}
+.bookings-head h1{margin:0 0 4px;font-size:30px;line-height:1.05}
+.bookings-head p{margin:0;color:var(--muted);font-size:13px;line-height:1.45;max-width:470px}
+.bookings-head .mini{flex:0 0 auto}
+.booking-stack{display:grid;gap:12px}
+.booking-panel{border:1px solid var(--line);background:var(--surface);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+.booking-panel>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 16px;cursor:pointer}
+.booking-panel>summary::-webkit-details-marker{display:none}
+.booking-panel>summary:before{content:'›';font-size:25px;line-height:1;transform:rotate(0deg);transition:.18s ease;color:var(--muted);order:3}
+.booking-panel[open]>summary:before{transform:rotate(90deg)}
+.booking-panel-title{display:grid;gap:3px;min-width:0;flex:1}
+.booking-panel-title b{font-size:15px;letter-spacing:.01em}
+.booking-panel-title small{font-size:11px;color:var(--muted);font-weight:600}
+.booking-count{flex:0 0 auto;border:1px solid var(--line);background:var(--soft);border-radius:999px;padding:5px 9px;font-size:10px;font-weight:900;white-space:nowrap}
+.booking-list{border-top:1px solid var(--line);padding:10px;display:grid;gap:8px}
+.booking-card{display:grid!important;grid-template-columns:58px minmax(0,1fr) auto;align-items:center;gap:11px;padding:11px!important;border:1px solid var(--line);border-radius:15px;background:var(--soft);color:inherit!important;text-decoration:none!important;min-width:0}
+.booking-datebox{width:58px;height:58px;border-radius:13px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;align-content:center;text-align:center;line-height:1}
+.booking-datebox span{font-size:10px;font-weight:900;color:var(--muted);letter-spacing:.06em}
+.booking-datebox strong{font-size:22px;margin-top:3px}
+.booking-info{min-width:0;display:grid;gap:3px}
+.booking-info .eyebrow{font-size:9px;letter-spacing:.08em;color:var(--muted);font-weight:900}
+.booking-info b{font-size:14px;line-height:1.25;white-space:normal;overflow-wrap:anywhere}
+.booking-info small{font-size:11px;line-height:1.35;color:var(--muted);white-space:normal}
+.booking-card .pill{justify-self:end;white-space:nowrap;font-size:9px;padding:6px 8px}
+.booking-empty{padding:18px;text-align:center;color:var(--muted);font-size:12px}
+.booking-action{margin-top:4px;width:100%}
+.payment-proof-card{margin-top:14px;border:1px solid var(--line);background:var(--surface);border-radius:18px;padding:16px;display:grid;gap:12px}
+.payment-proof-card .eyebrow{font-size:10px;letter-spacing:.1em;color:var(--muted);font-weight:900}
+.payment-proof-card h3{margin:3px 0 0;font-size:20px}
+.payment-proof-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+.payment-proof-card .btn{width:100%;text-align:center}
+
+@media(max-width:480px){
+  .bookings-head h1{font-size:28px}.bookings-head p{font-size:12px}
+  .booking-card{grid-template-columns:52px minmax(0,1fr)!important;align-items:start}
+  .booking-datebox{width:52px;height:52px}.booking-datebox strong{font-size:20px}
+  .booking-card .pill{grid-column:2;justify-self:start;margin-top:2px}
+}
