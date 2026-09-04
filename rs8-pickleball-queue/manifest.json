@@ -1,13 +1,13 @@
 {
-  "version": "1.5.8",
-  "min_version": "1.5.7",
+  "version": "1.5.9",
+  "min_version": "1.5.8",
   "published_at": "September 4, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/df788e5bf8a23d1b5b42f95fe3c0ca46f24e2bbd/rs8-pickleball-queue/releases/v1.5.8.json",
-  "sha256": "f5dd18b8b84244afc626de6b95fb0c2d1e9d1c1c7ad12c86e9136f6ef47eb48e",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/4735493176d87355e8277e766037f62e7d15d3d4/rs8-pickleball-queue/releases/v1.5.9.json",
+  "sha256": "e11a7056bf0597ae7248ce086f7dcfa0a5c5c347c741f4434673c189a73e3f38",
   "changelog": [
-    "Permanently fixed Start Match overlay hanging on devices where screen orientation lock does not resolve.",
-    "Match now initializes and hides the overlay immediately before requesting landscape orientation in the background.",
-    "Added both pointer and click-safe Start Match handling while preventing duplicate match initialization.",
-    "Preserves the 2D side-view gameplay and all v1.5.6 navigation and booking fixes."
+    "Hard-fixed Start Match tap handling for Android and installed PWA mode.",
+    "Start button now has a native inline fallback and no longer depends solely on external JavaScript event binding.",
+    "Forced the Start overlay and button to accept pointer events above all gameplay layers.",
+    "Preserves the 2D side-view gameplay and existing Pickle Que navigation and booking fixes."
   ]
 }
