@@ -1,0 +1,19 @@
+<Window x:Class="PulseAlarm.Windows.AlarmWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None" WindowState="Maximized" Topmost="True" Background="#E60E0F12" Foreground="White">
+  <Grid Margin="50">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="560">
+      <TextBlock Text="PULSE ALARM" Foreground="{StaticResource PulseRedBrush}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
+      <TextBlock x:Name="TitleText" FontSize="48" FontWeight="Black" TextAlignment="Center" TextWrapping="Wrap" Margin="0,18,0,8"/>
+      <TextBlock x:Name="DetailsText" FontSize="20" Foreground="#D0D1D5" TextAlignment="Center" TextWrapping="Wrap"/>
+      <TextBlock x:Name="DueText" FontSize="24" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,22,0,40"/>
+      <Grid>
+        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <Button Content="SNOOZE 5 MIN" Height="58" Margin="0,0,8,0" Background="#303238" Foreground="White" Click="Snooze_Click"/>
+        <Button Grid.Column="1" Content="HOLD TO DONE" Height="58" Margin="8,0,0,0" Background="{StaticResource PulseRedBrush}" Foreground="White"
+                PreviewMouseLeftButtonDown="Done_Down" PreviewMouseLeftButtonUp="Done_Up"/>
+      </Grid>
+    </StackPanel>
+  </Grid>
+</Window>

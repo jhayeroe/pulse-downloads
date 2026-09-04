@@ -1,0 +1,21 @@
+<Window x:Class="PulseAlarm.Windows.AddAlarmWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add Alarm" Width="390" Height="500" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" Background="#0E0F12" Foreground="White">
+  <Grid Margin="24">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <TextBlock Text="NEW ALARM" FontSize="28" FontWeight="Black"/>
+    <StackPanel Grid.Row="1" Margin="0,24,0,0">
+      <TextBlock Text="Reminder Title" Foreground="#A7A9AF"/><TextBox x:Name="TitleBox" Height="40" Margin="0,6,0,14" Padding="10"/>
+      <TextBlock Text="Reminder Details" Foreground="#A7A9AF"/><TextBox x:Name="DetailsBox" Height="64" Margin="0,6,0,14" Padding="10" AcceptsReturn="True"/>
+      <TextBlock Text="Alarm Time" Foreground="#A7A9AF"/>
+      <StackPanel Orientation="Horizontal" Margin="0,6,0,14">
+        <DatePicker x:Name="DatePicker" Width="190" Height="38"/>
+        <TextBox x:Name="TimeBox" Width="120" Height="38" Margin="10,0,0,0" Padding="8" ToolTip="Example: 3:30 PM"/>
+      </StackPanel>
+      <CheckBox x:Name="ImportantBox" Content="Important alarm" FontWeight="SemiBold"/>
+    </StackPanel>
+    <Button Grid.Row="2" Content="SAVE ALARM" Height="50" Background="{StaticResource PulseRedBrush}" Foreground="White" Click="Save_Click"/>
+  </Grid>
+</Window>

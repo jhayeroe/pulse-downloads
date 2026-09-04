@@ -1,0 +1,16 @@
+<Application x:Class="PulseAlarm.Windows.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnExplicitShutdown">
+  <Application.Resources>
+    <Color x:Key="PulseRed">#E31937</Color>
+    <SolidColorBrush x:Key="PulseRedBrush" Color="{StaticResource PulseRed}"/>
+    <SolidColorBrush x:Key="PanelBrush" Color="#17181C"/>
+    <Style TargetType="Button">
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Padding" Value="16,10"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+  </Application.Resources>
+</Application>
