@@ -1,0 +1,27 @@
+<Window x:Class="PulseAlarm.Windows.AccountWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PULSE Account" Width="420" Height="390" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" Background="#0E0F12" Foreground="White">
+  <Grid Margin="26">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <TextBlock Text="PULSE ACCOUNT" FontSize="28" FontWeight="Black"/>
+    <TextBlock Grid.Row="1" Margin="0,8,0,18" Foreground="#A7A9AF" TextWrapping="Wrap"
+               Text="Sign in with the same Pulse Account used on Android. The password is used only to create the session and is not saved."/>
+    <TextBlock Grid.Row="2" Text="EMAIL" FontSize="12" FontWeight="Bold" Foreground="#A7A9AF"/>
+    <TextBox x:Name="EmailBox" Grid.Row="3" Height="42" Margin="0,6,0,14" Padding="10" FontSize="15"/>
+    <StackPanel Grid.Row="4">
+      <TextBlock Text="PASSWORD" FontSize="12" FontWeight="Bold" Foreground="#A7A9AF"/>
+      <PasswordBox x:Name="PasswordBox" Height="42" Margin="0,6,0,16" Padding="10" FontSize="15"/>
+      <TextBlock x:Name="StatusText" Foreground="#FF6B6B" Margin="0,0,0,10" TextWrapping="Wrap"/>
+      <Button x:Name="SignInButton" Content="SIGN IN &amp; SYNC" Height="48" Background="#E51B23" Foreground="White" FontWeight="Bold" Click="SignIn_Click"/>
+    </StackPanel>
+  </Grid>
+</Window>
