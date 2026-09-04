@@ -18,7 +18,7 @@ jobs:
 
       - name: Download signed release bundle
         run: |
-          curl -L --fail --retry 3 'https://sdmntprnznorth.oaiusercontent.com/files/00000000-6c38-820b-a4cd-bb503b413641/raw?se=2026-08-27T08%3A31%3A53Z&sp=r&sv=2026-02-06&sr=b&scid=2cc9f59c-dd62-5158-af55-fae8da69c72e&skoid=0556a536-9b18-4aa8-bae0-70ed682ee936&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-27T02%3A47%3A18Z&ske=2026-08-28T02%3A47%3A18Z&sks=b&skv=2026-02-06&sig=i6RmKbfSqi8myMBWDzxdKa/Yu3A8dAcBVjIbkX3guDQ%3D' -o suite.zip
+          curl -L --fail --retry 3 'https://sdmntprjapaneast.oaiusercontent.com/files/00000000-8e98-8209-94dd-d41909640a37/raw?se=2026-09-04T15%3A03%3A23Z&sp=r&sv=2026-02-06&sr=b&scid=e52098ab-cdd5-597a-9a51-9a8a7a9e99bf&skoid=03727f49-62d3-42ac-8350-1c0e6559d238&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-04T03%3A13%3A00Z&ske=2026-09-05T03%3A13%3A00Z&sks=b&skv=2026-02-06&sig=Ne5mHs%2BmP4p9ABIlMV14Kco8KTfERo3Bpev1ntPWcUw%3D' -o suite.zip
           rm -rf release-suite
           mkdir -p release-suite
           unzip -q suite.zip -d release-suite
@@ -32,40 +32,45 @@ jobs:
       - name: Publish PULSE Suite
         run: |
           mkdir -p apk
-          cp release-suite/PULSE-Stable-v2.5.6.apk apk/PULSE-Stable-v2.5.6.apk
-          cp release-suite/PULSE-Stable-v2.5.6.apk apk/PULSE-Stable-Latest.apk
-          cp release-suite/PULSE-Calendar-v1.3.3.apk apk/PULSE-Calendar-v1.3.3.apk
-          cp release-suite/PULSE-Calendar-v1.3.3.apk apk/PULSE-Calendar-Latest.apk
-          cp release-suite/PULSE-Notes-v1.0.6.apk apk/PULSE-Notes-v1.0.6.apk
-          cp release-suite/PULSE-Notes-v1.0.6.apk apk/PULSE-Notes-Latest.apk
-          printf '2.5.6\n' > latest.txt
-          printf '1.3.3\n' > calendar-latest.txt
-          printf '1.0.6\n' > notes-latest.txt
+          cp release-suite/PULSE-Stable-v2.5.8.apk apk/PULSE-Stable-v2.5.8.apk
+          cp release-suite/PULSE-Stable-v2.5.8.apk apk/PULSE-Stable-Latest.apk
+          cp release-suite/PULSE-Suite-v1.0.4.apk apk/PULSE-Suite-v1.0.4.apk
+          cp release-suite/PULSE-Suite-v1.0.4.apk apk/PULSE-Suite-Latest.apk
+          cp release-suite/PULSE-Calendar-v1.3.5.apk apk/PULSE-Calendar-v1.3.5.apk
+          cp release-suite/PULSE-Calendar-v1.3.5.apk apk/PULSE-Calendar-Latest.apk
+          cp release-suite/PULSE-Notes-v1.0.8.apk apk/PULSE-Notes-v1.0.8.apk
+          cp release-suite/PULSE-Notes-v1.0.8.apk apk/PULSE-Notes-Latest.apk
+          printf '2.5.8\n' > latest.txt
+          printf '1.0.4\n' > suite-latest.txt
+          printf '1.3.5\n' > calendar-latest.txt
+          printf '1.0.8\n' > notes-latest.txt
           cat > suite-latest.json <<'JSON'
           {
             "suite": "PULSE Suite",
+            "suite_version": "1.0.4",
+            "suite_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Suite-Latest.apk",
             "schema": 1,
             "apps": [
               {
                 "key": "alarm",
                 "name": "Pulse Alarm",
                 "package": "com.pulse.alarm.stable",
-                "version": "2.5.6",
-                "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Stable-v2.5.6.apk"
+                "version": "2.5.8",
+                "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Stable-Latest.apk"
               },
               {
                 "key": "calendar",
                 "name": "Pulse Calendar",
                 "package": "com.pulse.calendar.stable",
-                "version": "1.3.3",
-                "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Calendar-v1.3.3.apk"
+                "version": "1.3.5",
+                "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Calendar-Latest.apk"
               },
               {
                 "key": "notes",
                 "name": "Pulse Notes",
                 "package": "com.pulse.notes.stable",
-                "version": "1.0.6",
-                "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Notes-v1.0.6.apk"
+                "version": "1.0.8",
+                "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Notes-Latest.apk"
               }
             ]
           }
@@ -76,6 +81,6 @@ jobs:
           rm -rf suite.zip release-suite
           git config user.name 'PULSE Release Bot'
           git config user.email 'actions@users.noreply.github.com'
-          git add apk/PULSE-Stable-v2.5.6.apk apk/PULSE-Stable-Latest.apk apk/PULSE-Calendar-v1.3.3.apk apk/PULSE-Calendar-Latest.apk apk/PULSE-Notes-v1.0.6.apk apk/PULSE-Notes-Latest.apk latest.txt calendar-latest.txt notes-latest.txt suite-latest.json
-          git commit -m 'Publish PULSE Suite 2.5.6 / 1.3.3 / 1.0.6'
+          git add apk/PULSE-Stable-v2.5.8.apk apk/PULSE-Stable-Latest.apk apk/PULSE-Suite-v1.0.4.apk apk/PULSE-Suite-Latest.apk apk/PULSE-Calendar-v1.3.5.apk apk/PULSE-Calendar-Latest.apk apk/PULSE-Notes-v1.0.8.apk apk/PULSE-Notes-Latest.apk latest.txt suite-latest.txt calendar-latest.txt notes-latest.txt suite-latest.json
+          git commit -m 'Publish PULSE Suite 1.0.4 / Alarm 2.5.8 / Calendar 1.3.5 / Notes 1.0.8'
           git push
