@@ -1,14 +1,14 @@
 {
-  "version": "1.5.6",
-  "min_version": "1.5.5",
-  "published_at": "September 3, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/cb7087f851a096750676fa68c41f72e2e2b4c7c7/rs8-pickleball-queue/releases/v1.5.6.json",
-  "sha256": "9ba0aea7b40b6807d73e9e9ca4aec8e6990617ba7b0b85edc50b761145f9cbd5",
+  "version": "1.5.7",
+  "min_version": "1.5.6",
+  "published_at": "September 4, 2026",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/2d2728c1f5885ec339ffe82201aea374cddee147/rs8-pickleball-queue/releases/v1.5.7.json",
+  "sha256": "5e1775b9fa159ddf3d1ba4a155acfd81c7036164c03c48e788388ee8f53ecfda",
   "changelog": [
-    "Public bottom navigation is hard-fixed to one row with exactly Home, Bookings, Queue and Settings.",
-    "Admin navigation remains one row with five buttons including Calendar.",
-    "Bookings layout receives additional mobile overflow and spacing protection so cards and headings stay compressed cleanly.",
-    "Drea proof-of-payment link now opens the Facebook Messages thread directly instead of the broken username-style Messenger route.",
-    "Existing grouped-by-date Bookings, booking details, cancellation flow and match history are preserved."
+    "Rebuilt 0-0-2 as a pure landscape 2D side-view pickleball game.",
+    "Left thumb now controls Back and Forward movement with no auto-footwork.",
+    "Right thumb has Dink, Lob, Drive and Flick shot buttons.",
+    "Added side-view ball physics, net collision, bounce handling, timing range and CPU positioning.",
+    "Preserves the v1.5.6 navigation and booking fixes."
   ]
 }
