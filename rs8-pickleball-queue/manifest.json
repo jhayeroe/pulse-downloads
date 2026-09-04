@@ -1,13 +1,14 @@
 {
-  "version": "1.5.9",
-  "min_version": "1.5.8",
-  "published_at": "September 4, 2026",
-  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/4735493176d87355e8277e766037f62e7d15d3d4/rs8-pickleball-queue/releases/v1.5.9.json",
-  "sha256": "e11a7056bf0597ae7248ce086f7dcfa0a5c5c347c741f4434673c189a73e3f38",
+  "version": "1.6.0",
+  "min_version": "1.5.9",
+  "published_at": "September 5, 2026",
+  "package_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/c4967a7c41c3ad6a6fc03c8b44487b5f4ae12fb3/rs8-pickleball-queue/releases/v1.6.0.json",
+  "sha256": "a88ba477c09277de65885f482ac4b381c76dc130d381b977a9888eb29027bbea",
   "changelog": [
-    "Hard-fixed Start Match tap handling for Android and installed PWA mode.",
-    "Start button now has a native inline fallback and no longer depends solely on external JavaScript event binding.",
-    "Forced the Start overlay and button to accept pointer events above all gameplay layers.",
-    "Preserves the 2D side-view gameplay and existing Pickle Que navigation and booking fixes."
+    "Completely rebuilt 0-0-2 as a self-contained landscape 2D side-view game.",
+    "Court, net, both players and ball are now real HTML/CSS game elements and remain visible even before Start Match.",
+    "Left thumb controls Back and Forward; right thumb controls Dink, Lob, Drive and Flick.",
+    "Added ball physics, CPU movement and returns, net interaction, bounce handling and score-to-11 gameplay.",
+    "Removed orientation-lock and canvas-renderer dependencies from core gameplay."
   ]
 }
