@@ -1,12 +1,15 @@
 <Window x:Class="PulseAlarm.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="PULSE Alarm" Width="440" Height="760" MinWidth="390" MinHeight="620"
+        Title="PULSE Alarm" Width="460" Height="820" MinWidth="410" MinHeight="680"
         WindowStartupLocation="CenterScreen" Background="#0E0F12" Foreground="White">
   <Grid Margin="24">
     <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
-      <RowDefinition Height="*"/><RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
 
     <Grid>
@@ -20,7 +23,22 @@
       </StackPanel>
     </Grid>
 
-    <Border Grid.Row="1" Margin="0,22,0,16" Padding="14" CornerRadius="14" Background="{StaticResource PanelBrush}">
+    <Border Grid.Row="1" Margin="0,20,0,10" Padding="14" CornerRadius="14" Background="{StaticResource PanelBrush}">
+      <Grid>
+        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <StackPanel>
+          <TextBlock Text="PULSE ACCOUNT" FontSize="12" FontWeight="Bold" Foreground="#A7A9AF"/>
+          <TextBlock x:Name="AccountText" Text="Not signed in" FontSize="15" FontWeight="SemiBold" Margin="0,3,0,0"/>
+          <TextBlock x:Name="SyncText" Text="Cloud sync is off" FontSize="12" Foreground="#A7A9AF" Margin="0,3,0,0"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+          <Button x:Name="AccountButton" Content="SIGN IN" Padding="12,7" Margin="0,0,8,0" Click="Account_Click"/>
+          <Button x:Name="SyncButton" Content="SYNC" Padding="12,7" Click="Sync_Click"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Border Grid.Row="2" Margin="0,0,0,12" Padding="14" CornerRadius="14" Background="{StaticResource PanelBrush}">
       <DockPanel>
         <StackPanel DockPanel.Dock="Left">
           <TextBlock Text="MEETING MODE" FontWeight="Bold"/>
@@ -32,12 +50,12 @@
       </DockPanel>
     </Border>
 
-    <ListBox x:Name="AlarmList" Grid.Row="2" Background="Transparent" BorderThickness="0"
+    <ListBox x:Name="AlarmList" Grid.Row="3" Background="Transparent" BorderThickness="0"
              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
       <ListBox.ItemTemplate>
         <DataTemplate>
           <Border Background="{StaticResource PanelBrush}" CornerRadius="14" Padding="16" Margin="0,0,0,10">
-            <Grid Width="350">
+            <Grid Width="365">
               <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
               <StackPanel>
                 <TextBlock Text="{Binding Title}" FontSize="17" FontWeight="Bold"/>
@@ -53,8 +71,14 @@
       </ListBox.ItemTemplate>
     </ListBox>
 
-    <Button Grid.Row="3" Content="＋  ADD ALARM" Height="54" Margin="0,14,0,0"
-            Background="{StaticResource PulseRedBrush}" Foreground="White" FontSize="16"
-            Click="AddAlarm_Click"/>
+    <Grid Grid.Row="4" Margin="0,12,0,0">
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <Button Grid.Row="0" Grid.ColumnSpan="2" Content="＋  ADD ALARM" Height="54"
+              Background="{StaticResource PulseRedBrush}" Foreground="White" FontSize="16"
+              Click="AddAlarm_Click"/>
+      <Button Grid.Row="1" Grid.Column="0" Content="IMPORT BACKUP" Height="38" Margin="0,8,4,0" Click="ImportBackup_Click"/>
+      <Button Grid.Row="1" Grid.Column="1" Content="EXPORT BACKUP" Height="38" Margin="4,8,0,0" Click="ExportBackup_Click"/>
+    </Grid>
   </Grid>
 </Window>
