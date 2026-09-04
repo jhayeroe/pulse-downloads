@@ -19,7 +19,7 @@ public partial class AddAlarmWindow : Window
     {
         if (DatePicker.SelectedDate is null || !DateTime.TryParse(TimeBox.Text, CultureInfo.CurrentCulture, DateTimeStyles.None, out var parsed))
         {
-            MessageBox.Show("Please enter a valid date and time, e.g. 3:30 PM.", "PULSE Alarm");
+            System.Windows.MessageBox.Show("Please enter a valid date and time, e.g. 3:30 PM.", "PULSE Alarm");
             return;
         }
         var due = DatePicker.SelectedDate.Value.Date.Add(parsed.TimeOfDay);

@@ -91,5 +91,5 @@ public partial class MainWindow : Window
     }
 
     private void RestoreWindow() { Show(); WindowState = WindowState.Normal; Activate(); }
-    private void ExitApp() { _allowClose = true; _tray.Dispose(); System.Windows.Application.Current.Shutdown(); }
+    private void ExitApp() { _allowClose = true; _tray.Dispose(); Application.Current.Shutdown(); }
 }

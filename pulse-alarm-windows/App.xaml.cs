@@ -2,7 +2,7 @@ using System.Windows;
 
 namespace PulseAlarm.Windows;
 
-public partial class App : System.Windows.Application
+public partial class App : Application
 {
     private MainWindow? _main;
 
