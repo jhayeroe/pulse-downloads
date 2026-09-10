@@ -16,71 +16,39 @@ jobs:
       - name: Checkout downloads repo
         uses: actions/checkout@v4
 
-      - name: Download signed release bundle
+      - name: Download verified Pulse Alarm 2.5.10 build artifact
         run: |
-          curl -L --fail --retry 3 'https://sdmntprkoreacentral.oaiusercontent.com/files/00000000-8ffc-8206-baab-c2a2dd012938/raw?se=2026-09-04T15%3A27%3A55Z&sp=r&sv=2026-02-06&sr=b&scid=77fe5908-6dac-5b9d-940a-934317fa508b&skoid=03727f49-62d3-42ac-8350-1c0e6559d238&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-04T03%3A11%3A11Z&ske=2026-09-05T03%3A11%3A11Z&sks=b&skv=2026-02-06&sig=oK7aSwMpy5toLstr58pExXC5EkSfN/i4BN6fTiM1Z28%3D' -o suite.zip
-          rm -rf release-suite
-          mkdir -p release-suite
-          unzip -q suite.zip -d release-suite
+          curl -L --fail --retry 3 'https://sdmntpritalynorth.oaiusercontent.com/files/00000000-22fc-8246-9d6e-8980b3069ff7/raw?se=2026-09-10T03%3A57%3A15Z&sp=r&sv=2026-02-06&sr=b&scid=7c6f40a9-4e8e-57d2-a629-1c9d5d3dcf1c&skoid=ca37c3ec-ab43-496e-be5f-4684c5519a26&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-10T03%3A20%3A16Z&ske=2026-09-11T03%3A20%3A16Z&sks=b&skv=2026-02-06&sig=3v/nwyI8zU50JpgRSHOwtaQ1bYgXjuVmpmcxTfEcMIk%3D' -o pulse-alarm-2.5.10.zip
+          rm -rf release-alarm
+          mkdir -p release-alarm
+          unzip -q pulse-alarm-2.5.10.zip -d release-alarm
+          test -f release-alarm/app-debug.apk
 
-      - name: Verify release checksums
-        run: |
-          cd release-suite
-          sed 's#suite/##' SHA256SUMS.txt > SHA256SUMS.local.txt
-          sha256sum -c SHA256SUMS.local.txt
-
-      - name: Publish PULSE Suite
+      - name: Publish Pulse Alarm 2.5.10
         run: |
           mkdir -p apk
-          cp release-suite/PULSE-Stable-v2.5.9.apk apk/PULSE-Stable-v2.5.9.apk
-          cp release-suite/PULSE-Stable-v2.5.9.apk apk/PULSE-Stable-Latest.apk
-          cp release-suite/PULSE-Suite-v1.0.5.apk apk/PULSE-Suite-v1.0.5.apk
-          cp release-suite/PULSE-Suite-v1.0.5.apk apk/PULSE-Suite-Latest.apk
-          cp release-suite/PULSE-Calendar-v1.3.5.apk apk/PULSE-Calendar-v1.3.5.apk
-          cp release-suite/PULSE-Calendar-v1.3.5.apk apk/PULSE-Calendar-Latest.apk
-          cp release-suite/PULSE-Notes-v1.0.8.apk apk/PULSE-Notes-v1.0.8.apk
-          cp release-suite/PULSE-Notes-v1.0.8.apk apk/PULSE-Notes-Latest.apk
-          printf '2.5.9\n' > latest.txt
-          printf '1.0.5\n' > suite-latest.txt
-          printf '1.3.5\n' > calendar-latest.txt
-          printf '1.0.8\n' > notes-latest.txt
-          cat > suite-latest.json <<'JSON'
-          {
-            "suite": "PULSE Suite",
-            "suite_version": "1.0.5",
-            "suite_url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Suite-Latest.apk",
-            "schema": 1,
-            "apps": [
-              {
-                "key": "alarm",
-                "name": "Pulse Alarm",
-                "package": "com.pulse.alarm.stable",
-                "version": "2.5.9",
-                "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Stable-Latest.apk"
-              },
-              {
-                "key": "calendar",
-                "name": "Pulse Calendar",
-                "package": "com.pulse.calendar.stable",
-                "version": "1.3.5",
-                "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Calendar-Latest.apk"
-              },
-              {
-                "key": "notes",
-                "name": "Pulse Notes",
-                "package": "com.pulse.notes.stable",
-                "version": "1.0.8",
-                "url": "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Notes-Latest.apk"
-              }
-            ]
-          }
-          JSON
+          cp release-alarm/app-debug.apk apk/PULSE-Stable-v2.5.10.apk
+          cp release-alarm/app-debug.apk apk/PULSE-Stable-Latest.apk
+          printf '2.5.10\n' > latest.txt
+          python3 - <<'PY'
+          import json
+          p='suite-latest.json'
+          with open(p,'r',encoding='utf-8') as f:
+              data=json.load(f)
+          for app in data.get('apps',[]):
+              if app.get('key')=='alarm':
+                  app['version']='2.5.10'
+                  app['url']='https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Stable-Latest.apk'
+          with open(p,'w',encoding='utf-8') as f:
+              json.dump(data,f,indent=2)
+              f.write('\n')
+          PY
 
       - name: Commit updater release
         run: |
-          rm -rf suite.zip release-suite
+          rm -rf pulse-alarm-2.5.10.zip release-alarm
           git config user.name 'PULSE Release Bot'
           git config user.email 'actions@users.noreply.github.com'
-          git add apk/PULSE-Stable-v2.5.9.apk apk/PULSE-Stable-Latest.apk apk/PULSE-Suite-v1.0.5.apk apk/PULSE-Suite-Latest.apk apk/PULSE-Calendar-v1.3.5.apk apk/PULSE-Calendar-Latest.apk apk/PULSE-Notes-v1.0.8.apk apk/PULSE-Notes-Latest.apk latest.txt suite-latest.txt calendar-latest.txt notes-latest.txt suite-latest.json
-          git commit -m 'Publish PULSE Suite 1.0.5 / Alarm 2.5.9 / Calendar 1.3.5 / Notes 1.0.8'
+          git add apk/PULSE-Stable-v2.5.10.apk apk/PULSE-Stable-Latest.apk latest.txt suite-latest.json
+          git commit -m 'Publish Pulse Alarm 2.5.10'
           git push
