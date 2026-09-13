@@ -1,0 +1,14 @@
+{
+  "version": "0.5.1",
+  "min_php": "8.0",
+  "summary": "Attendance schedule and late-classification accuracy fix.",
+  "changelog": [
+    "Default work schedule is 8:30 AM to 5:30 PM for all employees until HR publishes the 8:00 AM to 5:00 PM exception list.",
+    "Daily Dashboard and Attendance Review now use the same schedule-rule source.",
+    "A missing AM punch or PM-only punch is classified for review instead of being counted as late.",
+    "AM late minutes are recalculated from the valid/effective morning punch against the 8:30 AM default.",
+    "PM late minutes are counted only when the attendance engine has a valid LATE_PM interpretation.",
+    "Daily Dashboard shows a Needs Review count and list for incomplete punch pairing."
+  ],
+  "files": []
+}
