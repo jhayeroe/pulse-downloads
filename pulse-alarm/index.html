@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#090a0c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Pulse Alarm">
+  <title>Pulse Alarm</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <style>
+    :root{color-scheme:dark;--bg:#090a0c;--card:#14161a;--line:#262a31;--fg:#f5f6f7;--muted:#9299a6;--red:#e52b37;--green:#33c06f}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;min-height:100dvh}button,input{font:inherit}.shell{max-width:620px;margin:0 auto;padding:max(22px,env(safe-area-inset-top)) 18px max(30px,env(safe-area-inset-bottom))}.brand{font-size:12px;letter-spacing:.22em;color:var(--red);font-weight:800}.title{font-size:31px;font-weight:850;margin:6px 0 4px}.sub{color:var(--muted);font-size:14px;line-height:1.45}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:17px;margin-top:15px}.field{width:100%;background:#0e1013;border:1px solid var(--line);color:var(--fg);padding:14px;border-radius:14px;margin:7px 0;outline:none}.field:focus{border-color:#555d6b}.btn{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px;font-weight:800;background:#1b1e23;color:var(--fg);margin-top:10px}.btn.primary{background:var(--red);border-color:var(--red)}.btn.ghost{background:transparent}.row{display:flex;gap:9px}.row .btn{flex:1}.hidden{display:none!important}.identity{display:flex;align-items:center;gap:12px}.avatar{width:44px;height:44px;border-radius:14px;background:#242830;display:grid;place-items:center;font-weight:900;color:var(--red)}.name{font-weight:850;font-size:18px}.meta{color:var(--muted);font-size:12px;margin-top:3px}.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800;margin:8px 5px 0 0}.pill.red{border-color:#5f242a;color:#ff7d86}.sectionTitle{font-size:12px;letter-spacing:.14em;color:var(--red);font-weight:850;margin:24px 2px 8px}.assignment h3{margin:0 0 5px;font-size:17px}.assignment p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}.assignment .due{margin-top:10px;font-size:12px;font-weight:800}.empty{text-align:center;color:var(--muted);padding:28px 10px}.status{font-size:12px;color:var(--muted);min-height:18px;margin-top:9px}.install{border-left:3px solid var(--red)}.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.smallBtn{border:1px solid var(--line);background:transparent;color:var(--fg);padding:9px 11px;border-radius:12px;font-weight:800;font-size:12px}.dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px}.warn{color:#ffbd59}.joinGrid{display:grid;gap:7px}.footer{color:#5f6670;font-size:11px;text-align:center;margin-top:24px}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand">PULSE • ALARM</div>
+    <div class="title">Work reminders that follow you.</div>
+    <div class="sub" id="heroSub">Sign in with your Pulse Account. Your employee identity and workspace assignments are linked to the account you use.</div>
+
+    <section id="loginView" class="card">
+      <div style="font-weight:850;font-size:20px;margin-bottom:6px">Sign in</div>
+      <div class="sub">No guest mode. Your login determines which employee assignments appear on this device.</div>
+      <form id="loginForm">
+        <input class="field" id="email" type="email" autocomplete="username" placeholder="Email" required>
+        <input class="field" id="password" type="password" autocomplete="current-password" placeholder="Password" required>
+        <button class="btn primary" id="loginBtn" type="submit">SIGN IN TO PULSE</button>
+      </form>
+      <div class="status" id="loginStatus"></div>
+    </section>
+
+    <section id="appView" class="hidden">
+      <div class="card">
+        <div class="topbar">
+          <div class="identity">
+            <div class="avatar" id="avatar">P</div>
+            <div><div class="name" id="displayName">Pulse User</div><div class="meta" id="accountMeta"></div></div>
+          </div>
+          <button class="smallBtn" id="logoutBtn">SIGN OUT</button>
+        </div>
+        <div id="workspacePills"></div>
+        <div class="status"><span class="dot"></span><span id="syncStatus">Account connected</span></div>
+      </div>
+
+      <div id="installCard" class="card install hidden">
+        <div style="font-weight:850">Install on iPhone</div>
+        <div class="sub" style="margin-top:4px">In Safari: Share → Add to Home Screen → Add. Open Pulse Alarm from the new Home Screen icon.</div>
+      </div>
+
+      <div id="joinCard" class="card hidden">
+        <div style="font-weight:850">Connect to RS8 Workspace</div>
+        <div class="sub">Your account is signed in but is not yet attached to a workspace.</div>
+        <div class="joinGrid" style="margin-top:10px">
+          <input class="field" id="inviteCode" placeholder="Workspace invite code">
+          <input class="field" id="mentionHandle" placeholder="Workspace @handle">
+          <input class="field" id="jobTitle" placeholder="Job title">
+          <input class="field" id="department" placeholder="Department">
+          <button class="btn primary" id="joinBtn">JOIN WORKSPACE</button>
+        </div>
+        <div class="status" id="joinStatus"></div>
+      </div>
+
+      <div class="sectionTitle">MY ASSIGNED ALARMS / TASKS</div>
+      <div class="row"><button class="btn ghost" id="refreshBtn">REFRESH</button></div>
+      <div id="assignmentList"></div>
+    </section>
+
+    <div class="footer">PULSE Alarm Web • Login-bound employee identity</div>
+  </main>
+
+<script>
+const SB_URL='https://aviglyievilmbqxtjzsr.supabase.co';
+const SB_KEY='sb_publishable_2qfJSsd5jInntnakB01B5Q_3kudbcAa';
+const SESSION_KEY='pulse.web.session.v1';
+let session=null, context=null, refreshTimer=null;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+
+function loadSession(){try{session=JSON.parse(localStorage.getItem(SESSION_KEY)||'null')}catch{session=null}}
+function saveSession(s){session=s; if(s)localStorage.setItem(SESSION_KEY,JSON.stringify(s)); else localStorage.removeItem(SESSION_KEY)}
+async function jsonFetch(url,options={}){const r=await fetch(url,options);let body={};try{body=await r.json()}catch{}if(!r.ok)throw new Error(body.msg||body.message||body.error_description||'Request failed');return body}
+async function authFetch(path,body){if(!session?.access_token)throw new Error('Please sign in again');try{return await jsonFetch(SB_URL+path,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify(body||{})})}catch(e){if(session?.refresh_token){await refreshSession();return await jsonFetch(SB_URL+path,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify(body||{})})}throw e}}
+async function refreshSession(){if(!session?.refresh_token)throw new Error('Session expired');const n=await jsonFetch(SB_URL+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:session.refresh_token})});saveSession({...session,...n,refresh_token:n.refresh_token||session.refresh_token})}
+
+async function signIn(email,password){const s=await jsonFetch(SB_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email:email.trim(),password})});saveSession(s);await loadApp()}
+function signOut(){saveSession(null);context=null;clearInterval(refreshTimer);$('appView').classList.add('hidden');$('loginView').classList.remove('hidden');$('password').value='';$('loginStatus').textContent='Signed out';}
+
+async function loadApp(){
+  $('loginView').classList.add('hidden');$('appView').classList.remove('hidden');
+  $('syncStatus').textContent='Syncing account…';
+  context=await authFetch('/rest/v1/rpc/pulse_account_context',{});
+  renderIdentity(); await loadAssignments();
+  $('syncStatus').textContent='Account connected • '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  if(refreshTimer)clearInterval(refreshTimer); refreshTimer=setInterval(()=>{if(!document.hidden)loadAssignments().catch(()=>{})},60000);
+}
+function renderIdentity(){
+  const p=context?.profile||{}; const ws=Array.isArray(context?.workspaces)?context.workspaces:[];
+  const name=p.display_name||session?.user?.email||'Pulse User'; const handle=p.mention_handle?('@'+p.mention_handle):'';
+  $('displayName').textContent=name; $('avatar').textContent=(name.trim()[0]||'P').toUpperCase();
+  $('accountMeta').textContent=[session?.user?.email,handle].filter(Boolean).join(' • ');
+  $('workspacePills').innerHTML=ws.map(w=>`<span class="pill red">${esc(w.workspace_name||'Workspace')}</span><span class="pill">${esc((w.role||'member').toUpperCase())} • @${esc(w.mention_handle||p.mention_handle||'')}</span>`).join('');
+  $('joinCard').classList.toggle('hidden',ws.length>0);
+  const isiOS=/iPad|iPhone|iPod/.test(navigator.userAgent); const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  $('installCard').classList.toggle('hidden',!(isiOS&&!standalone));
+}
+
+async function loadAssignments(){
+  const data=await authFetch('/rest/v1/rpc/pulse_my_assignments',{}); const items=Array.isArray(data)?data:(data?.items||data?.assignments||[]);
+  const el=$('assignmentList');
+  if(!items.length){el.innerHTML='<div class="card empty">No active assigned alarms/tasks for this Pulse account.</div>';return}
+  el.innerHTML=items.map(a=>{const due=a.due_at?new Date(a.due_at):null; const dueText=due&&!isNaN(due)?due.toLocaleString([], {weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'No due time';return `<article class="card assignment"><h3>${esc(a.title||'Assigned task')}</h3><p>${esc(a.details||'')}</p><div><span class="pill red">${esc((a.source_type||'TASK').toUpperCase())}</span><span class="pill">${esc(a.workspace_name||'Pulse Workspace')}</span><span class="pill">${esc((a.assignee_state||'pending').toUpperCase())}</span></div><div class="due">${esc(dueText)}</div><div class="meta">Assigned by ${esc(a.creator_name||'Pulse User')}</div></article>`}).join('');
+}
+
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();const b=$('loginBtn');b.disabled=true;$('loginStatus').textContent='Signing in…';try{await signIn($('email').value,$('password').value);$('loginStatus').textContent=''}catch(err){$('loginStatus').textContent=err.message}finally{b.disabled=false}});
+$('logoutBtn').addEventListener('click',signOut);
+$('refreshBtn').addEventListener('click',async()=>{try{$('syncStatus').textContent='Refreshing…';context=await authFetch('/rest/v1/rpc/pulse_account_context',{});renderIdentity();await loadAssignments();$('syncStatus').textContent='Updated • '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}catch(e){$('syncStatus').textContent=e.message}});
+$('joinBtn').addEventListener('click',async()=>{const b=$('joinBtn');b.disabled=true;$('joinStatus').textContent='Connecting…';try{await authFetch('/rest/v1/rpc/join_workspace_by_code',{p_code:$('inviteCode').value.trim(),p_mention_handle:$('mentionHandle').value.trim(),p_job_title:$('jobTitle').value.trim(),p_department:$('department').value.trim()});context=await authFetch('/rest/v1/rpc/pulse_account_context',{});renderIdentity();await loadAssignments();$('joinStatus').textContent='Workspace connected'}catch(e){$('joinStatus').textContent=e.message}finally{b.disabled=false}});
+
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&session?.access_token)loadAssignments().catch(()=>{})});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+loadSession(); if(session?.access_token){loadApp().catch(e=>{signOut();$('loginStatus').textContent=e.message})}
+</script>
+</body>
+</html>
