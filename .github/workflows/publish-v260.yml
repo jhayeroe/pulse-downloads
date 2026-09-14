@@ -1,0 +1,37 @@
+name: Publish Pulse Alarm v2.6.0
+
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-v260.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout downloads repo
+        uses: actions/checkout@v4
+
+      - name: Download verified v2.6.0 build
+        run: |
+          curl -fL 'https://sdmntprseasia.oaiusercontent.com/files/00000000-0f88-8207-a503-c0beb0a6c678/raw?se=2026-09-14T22%3A04%3A24Z&sp=r&sv=2026-02-06&sr=b&scid=87694bcc-6edb-508a-811d-83ed1e938773&skoid=ca37c3ec-ab43-496e-be5f-4684c5519a26&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-14T20%3A07%3A01Z&ske=2026-09-15T20%3A07%3A01Z&sks=b&skv=2026-02-06&sig=6urAeIgfIAu1QFoZ0buQiuPUOIO8L0pS%2Bu3YGbQLpDE%3D' -o /tmp/pulse260.zip
+          rm -rf /tmp/pulse260
+          mkdir -p /tmp/pulse260
+          unzip -q /tmp/pulse260.zip -d /tmp/pulse260
+          test -f /tmp/pulse260/app-debug.apk
+          echo 'c37c724980477b317fe7e8a879d22ebf5ed41212e7d21897e0e854c8e0119b4f  /tmp/pulse260/app-debug.apk' | sha256sum -c -
+
+      - name: Publish updater files
+        run: |
+          mkdir -p apk
+          cp /tmp/pulse260/app-debug.apk apk/PULSE-Stable-v2.6.0.apk
+          cp /tmp/pulse260/app-debug.apk apk/PULSE-Stable-Latest.apk
+          printf '2.6.0\n' > latest.txt
+          git config user.name 'PULSE Release Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add apk/PULSE-Stable-v2.6.0.apk apk/PULSE-Stable-Latest.apk latest.txt
+          git commit -m 'Release Pulse Alarm v2.6.0' || exit 0
+          git push
