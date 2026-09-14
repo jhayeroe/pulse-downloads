@@ -6,5 +6,13 @@
   "display": "standalone",
   "background_color": "#090a0c",
   "theme_color": "#090a0c",
-  "description": "Pulse Alarm employee reminders and workspace assignments"
+  "description": "Pulse Alarm employee reminders and workspace assignments",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
 }
