@@ -1,0 +1,10 @@
+{
+  "name": "Pulse Alarm",
+  "short_name": "Pulse Alarm",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090a0c",
+  "theme_color": "#090a0c",
+  "description": "Pulse Alarm employee reminders and workspace assignments"
+}
