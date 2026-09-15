@@ -19,12 +19,28 @@
   <div class="sub">Personal alarms + Pulse Workspace assignments, synced to your Pulse Account.</div>
 
   <section id="loginView" class="card">
-    <div class="alarmTitle">Sign in</div>
-    <div class="sub">No guest mode. Your account determines your personal cloud alarms and employee workspace assignments.</div>
-    <form id="loginForm">
+    <div class="alarmTitle" id="authTitle">Sign in</div>
+    <div class="sub" id="authHint">Sign in to sync your personal alarms and employee workspace assignments.</div>
+
+    <div class="two" style="margin-top:14px">
+      <button class="btn primary" id="showSignInBtn" type="button">SIGN IN</button>
+      <button class="btn ghost" id="showCreateBtn" type="button">CREATE ACCOUNT</button>
+    </div>
+
+    <form id="loginForm" style="margin-top:10px">
       <input class="field" id="email" type="email" autocomplete="username" placeholder="Email" required>
       <input class="field" id="password" type="password" autocomplete="current-password" placeholder="Password" required>
       <button class="btn primary full" id="loginBtn" type="submit">SIGN IN TO PULSE</button>
+    </form>
+
+    <form id="createAccountForm" class="hidden" style="margin-top:10px">
+      <input class="field" id="createDisplayName" autocomplete="name" placeholder="Full Name" required>
+      <input class="field" id="createHandle" autocomplete="off" placeholder="Pulse @handle (example: juan.delacruz)" required>
+      <input class="field" id="createEmail" type="email" autocomplete="email" placeholder="Email" required>
+      <input class="field" id="createPassword" type="password" autocomplete="new-password" placeholder="Password" minlength="6" required>
+      <input class="field" id="createPasswordConfirm" type="password" autocomplete="new-password" placeholder="Confirm Password" minlength="6" required>
+      <button class="btn primary full" id="createAccountBtn" type="submit">CREATE PULSE ACCOUNT</button>
+      <div class="sub" style="margin-top:10px">After account creation, you can connect to the RS8 Workspace from the Workspace tab so the account can receive employee-tagged alarms/tasks.</div>
     </form>
     <div class="status" id="loginStatus"></div>
   </section>
