@@ -30,26 +30,8 @@
   </section>
 
   <section id="appView" class="hidden">
-    <div class="card compact">
-      <div class="topbar">
-        <div class="identity"><div class="avatar" id="avatar">P</div><div><div class="name" id="displayName">Pulse User</div><div class="meta" id="accountMeta"></div></div></div>
-        <button class="btn ghost" id="logoutBtn">SIGN OUT</button>
-      </div>
-      <div id="workspacePills"></div>
-      <div class="status"><span class="dot"></span><span id="syncStatus">Connected</span></div>
-    </div>
-
-    <div id="installCard" class="card install hidden">
-      <div class="alarmTitle">Install on iPhone</div>
-      <div class="sub">Safari → Share → Add to Home Screen → Open as Web App → Add.</div>
-    </div>
-
     <section id="alarmsPage" class="tabPage">
       <div class="sectionTitle">MY ALARMS</div>
-      <div class="card compact">
-        <div class="switchRow"><div><div class="switchLabel">iPhone Background Notifications</div><div class="switchHint">Install Pulse to Home Screen first, then enable this for Lock Screen / Notification Center alerts even when Pulse is not open.</div></div><button class="btn primary" id="notifyBtn">ENABLE</button></div>
-        <div class="status" id="notifyStatus"></div>
-      </div>
       <div id="alarmList"></div>
     </section>
 
@@ -74,8 +56,36 @@
       <div class="card" id="historyList"></div>
     </section>
 
-    <section id="accountPage" class="tabPage hidden">
-      <div class="sectionTitle">ACCOUNT & IOS NOTES</div>
+    <section id="settingsPage" class="tabPage hidden">
+      <div class="sectionTitle">SETTINGS</div>
+
+      <div class="card compact">
+        <div class="topbar">
+          <div class="identity"><div class="avatar" id="avatar">P</div><div><div class="name" id="displayName">Pulse User</div><div class="meta" id="accountMeta"></div></div></div>
+        </div>
+        <div id="workspacePills"></div>
+        <div class="status"><span class="dot"></span><span id="syncStatus">Connected</span></div>
+      </div>
+
+      <div class="sectionTitle">NOTIFICATIONS</div>
+      <div class="card compact">
+        <div class="switchRow"><div><div class="switchLabel">iPhone Background Notifications</div><div class="switchHint">Install Pulse to Home Screen first, then enable this for Lock Screen / Notification Center alerts even when Pulse is not open.</div></div><button class="btn primary" id="notifyBtn">ENABLE</button></div>
+        <div class="status" id="notifyStatus"></div>
+      </div>
+
+      <div id="installCard" class="card install hidden">
+        <div class="alarmTitle">Install on iPhone</div>
+        <div class="sub">Safari → Share → Add to Home Screen → Open as Web App → Add.</div>
+      </div>
+
+      <div class="sectionTitle">ACCOUNT</div>
+      <div class="card">
+        <div class="alarmTitle">Pulse Account</div>
+        <div class="sub" style="margin-top:8px">Your login controls your synced personal alarms, workspace identity and assigned alarms/tasks on this device.</div>
+        <button class="btn ghost full" id="logoutBtn" style="margin-top:12px">SIGN OUT</button>
+      </div>
+
+      <div class="sectionTitle">IOS BEHAVIOR</div>
       <div class="card">
         <div class="alarmTitle">Best possible iOS behavior</div>
         <div class="sub" style="margin-top:8px">Pulse supports create/edit/repeat/cloud sync, personal alarm actions, managed team alarms, manager verification, background Web Push, snooze and accomplishment workflows. iOS still controls silent/Focus and notification presentation, so a PWA cannot guarantee Android-style full-screen bypass behavior.</div>
@@ -91,7 +101,7 @@
   <button data-tab="alarms" class="active">ALARMS</button>
   <button data-tab="workspace">WORKSPACE</button>
   <button data-tab="history">HISTORY</button>
-  <button data-tab="account">ACCOUNT</button>
+  <button data-tab="settings">SETTINGS</button>
 </nav>
 
 <div id="editor" class="sheet hidden">
