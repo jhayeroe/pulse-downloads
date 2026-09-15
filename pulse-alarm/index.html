@@ -47,7 +47,7 @@
     <section id="alarmsPage" class="tabPage">
       <div class="sectionTitle">MY ALARMS</div>
       <div class="card compact">
-        <div class="switchRow"><div><div class="switchLabel">iPhone Notifications</div><div class="switchHint">Allow Pulse alerts on Lock Screen and Notification Center.</div></div><button class="btn primary" id="notifyBtn">ENABLE</button></div>
+        <div class="switchRow"><div><div class="switchLabel">iPhone Background Notifications</div><div class="switchHint">Install Pulse to Home Screen first, then enable this for Lock Screen / Notification Center alerts even when Pulse is not open.</div></div><button class="btn primary" id="notifyBtn">ENABLE</button></div>
         <div class="status" id="notifyStatus"></div>
       </div>
       <div id="alarmList"></div>
@@ -65,6 +65,7 @@
         <div class="status" id="joinStatus"></div>
       </div>
       <button class="btn ghost full" id="refreshBtn">REFRESH ALL</button>
+      <div id="verificationList"></div>
       <div id="assignmentList"></div>
     </section>
 
@@ -77,7 +78,7 @@
       <div class="sectionTitle">ACCOUNT & IOS NOTES</div>
       <div class="card">
         <div class="alarmTitle">Best possible iOS behavior</div>
-        <div class="sub" style="margin-top:8px">Pulse can create, edit, repeat, sync, snooze, dismiss and accomplish alarms. iPhone web apps can deliver notifications, but iOS still controls silent/Focus behavior; a PWA cannot force the same full-screen bypass behavior as native Android.</div>
+        <div class="sub" style="margin-top:8px">Pulse supports create/edit/repeat/cloud sync, personal alarm actions, managed team alarms, manager verification, background Web Push, snooze and accomplishment workflows. iOS still controls silent/Focus and notification presentation, so a PWA cannot guarantee Android-style full-screen bypass behavior.</div>
       </div>
     </section>
   </section>
@@ -107,7 +108,7 @@
     <input class="field" id="alarmCategoryInput" placeholder="Category" value="General">
     <select class="field" id="soundInput"><option>Default</option><option>Soft</option><option>Critical</option></select>
     <div class="card compact">
-      <div class="switchRow"><div><div class="switchLabel">Important</div><div class="switchHint">Requires deliberate action inside Pulse.</div></div><input class="toggle" id="importantInput" type="checkbox"></div>
+      <div class="switchRow"><div><div class="switchLabel">Important</div><div class="switchHint">Requires deliberate 2-second hold inside Pulse.</div></div><input class="toggle" id="importantInput" type="checkbox"></div>
       <div class="switchRow"><div><div class="switchLabel">Vibrate</div><div class="switchHint">Uses vibration when supported by iOS/browser.</div></div><input class="toggle" id="vibrateInput" type="checkbox" checked></div>
       <div class="switchRow"><div><div class="switchLabel">Bypass Silent / Focus</div><div class="switchHint">Saved for cross-device parity. iOS PWA cannot guarantee this.</div></div><input class="toggle" id="bypassInput" type="checkbox"></div>
     </div>
@@ -127,6 +128,7 @@
 </div>
 
 <script src="./core.js"></script>
+<script src="./push.js"></script>
 <script src="./alarms.js"></script>
 <script src="./workspace.js"></script>
 <script src="./ui.js"></script>
