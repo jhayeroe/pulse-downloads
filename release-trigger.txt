@@ -1,1 +1,1 @@
-Pulse Alarm 2.5.10 release
+PULSE Suite 1.0.6 release
