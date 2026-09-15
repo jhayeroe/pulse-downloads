@@ -20,4 +20,4 @@ bindImportantHold($('doneBtn'),doneOccurrence,'DONE');
 bindImportantHold($('accomplishBtn'),accomplish,'ACCOMPLISH');
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){checkDue();if(session?.access_token){syncPersonal(true).catch(()=>{});loadAssignments().catch(()=>{});refreshPushRegistration().catch(()=>{})}}});
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
-loadSession();loadLocal();renderAlarms();renderHistory();if(!session?.access_token){$('bottomNav').style.display='none';$('addAlarmBtn').style.display='none'}if(session?.access_token)loadApp().catch(e=>{signOut();$('loginStatus').textContent=e.message});
+loadSession();loadLocal();renderAlarms();renderHistory();if(!session?.access_token){$('bottomNav').style.display='none';$('addAlarmBtn').style.display='none'}if(session?.access_token)loadApp().then(()=>{if(typeof applyLaunchIntent==='function')applyLaunchIntent()}).catch(e=>{signOut();$('loginStatus').textContent=e.message});
