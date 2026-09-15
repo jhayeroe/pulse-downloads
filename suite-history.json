@@ -1,5 +1,16 @@
 [
   {
+    "version": "1.0.6",
+    "date": "2026-09-15",
+    "notes": [
+      "Workspace joining is now invite-based for registered Pulse accounts; workspace codes are no longer required",
+      "Workspace owners and admins can search registered accounts and send invitations with the appropriate role",
+      "Invitees can accept or decline pending workspace invitations directly inside Pulse Suite",
+      "Existing workspace members are preserved while legacy workspace-code joining is disabled",
+      "Added invite status tracking and duplicate-pending-invite protection"
+    ]
+  },
+  {
     "version": "1.0.3",
     "date": "2026-09-01",
     "notes": [
