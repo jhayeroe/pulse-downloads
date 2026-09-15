@@ -16,39 +16,63 @@ jobs:
       - name: Checkout downloads repo
         uses: actions/checkout@v4
 
-      - name: Download verified Pulse Alarm 2.5.10 build artifact
+      - name: Download verified Pulse Suite 1.0.6 build artifact
         run: |
-          curl -L --fail --retry 3 'https://sdmntpritalynorth.oaiusercontent.com/files/00000000-22fc-8246-9d6e-8980b3069ff7/raw?se=2026-09-10T03%3A57%3A15Z&sp=r&sv=2026-02-06&sr=b&scid=7c6f40a9-4e8e-57d2-a629-1c9d5d3dcf1c&skoid=ca37c3ec-ab43-496e-be5f-4684c5519a26&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-10T03%3A20%3A16Z&ske=2026-09-11T03%3A20%3A16Z&sks=b&skv=2026-02-06&sig=3v/nwyI8zU50JpgRSHOwtaQ1bYgXjuVmpmcxTfEcMIk%3D' -o pulse-alarm-2.5.10.zip
-          rm -rf release-alarm
-          mkdir -p release-alarm
-          unzip -q pulse-alarm-2.5.10.zip -d release-alarm
-          test -f release-alarm/app-debug.apk
+          curl -L --fail --retry 3 'https://sdmntprindiasocentral.oaiusercontent.com/files/00000000-1f5c-8211-b26f-d6ab473c5205/raw?se=2026-09-15T07%3A19%3A09Z&sp=r&sv=2026-02-06&sr=b&scid=00eb600f-a5a1-5b4a-9179-4dfcd00d84dc&skoid=ca37c3ec-ab43-496e-be5f-4684c5519a26&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-15T02%3A21%3A23Z&ske=2026-09-16T02%3A21%3A23Z&sks=b&skv=2026-02-06&sig=gCeJQcX1XijO1x9bZnumfDtkNSU%2BLnQM6Nogf45%2BXNQ%3D' -o pulse-suite-1.0.6.zip
+          rm -rf release-suite
+          mkdir -p release-suite
+          unzip -q pulse-suite-1.0.6.zip -d release-suite
+          test -f release-suite/PULSE-Suite-v1.0.6.apk
+          echo 'f1963a13bb4a3b0dcff55a57043407e43841d1eeeff40919fd899a4cdf41b5d4  release-suite/PULSE-Suite-v1.0.6.apk' | sha256sum -c -
 
-      - name: Publish Pulse Alarm 2.5.10
+      - name: Publish Pulse Suite 1.0.6
         run: |
           mkdir -p apk
-          cp release-alarm/app-debug.apk apk/PULSE-Stable-v2.5.10.apk
-          cp release-alarm/app-debug.apk apk/PULSE-Stable-Latest.apk
-          printf '2.5.10\n' > latest.txt
+          cp release-suite/PULSE-Suite-v1.0.6.apk apk/PULSE-Suite-v1.0.6.apk
+          cp release-suite/PULSE-Suite-v1.0.6.apk apk/PULSE-Suite-Latest.apk
+          printf '1.0.6\n' > suite-latest.txt
           python3 - <<'PY'
           import json
           p='suite-latest.json'
           with open(p,'r',encoding='utf-8') as f:
               data=json.load(f)
-          for app in data.get('apps',[]):
-              if app.get('key')=='alarm':
-                  app['version']='2.5.10'
-                  app['url']='https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Stable-Latest.apk'
+          data['suite']='PULSE Suite'
+          data['suite_version']='1.0.6'
+          data['suite_url']='https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Suite-Latest.apk'
           with open(p,'w',encoding='utf-8') as f:
               json.dump(data,f,indent=2)
+              f.write('\n')
+          PY
+          python3 - <<'PY'
+          import json
+          p='suite-history.json'
+          try:
+              with open(p,'r',encoding='utf-8') as f:
+                  history=json.load(f)
+          except Exception:
+              history=[]
+          history=[x for x in history if x.get('version')!='1.0.6']
+          history.insert(0,{
+              'version':'1.0.6',
+              'date':'2026-09-15',
+              'notes':[
+                  'Workspace joining is now invite-based for registered Pulse accounts; workspace codes are no longer required',
+                  'Workspace owners and admins can search registered accounts and send invitations with the appropriate role',
+                  'Invitees can accept or decline pending workspace invitations directly inside Pulse Suite',
+                  'Existing workspace members are preserved while legacy workspace-code joining is disabled',
+                  'Added invite status tracking and duplicate-pending-invite protection'
+              ]
+          })
+          with open(p,'w',encoding='utf-8') as f:
+              json.dump(history,f,indent=2)
               f.write('\n')
           PY
 
       - name: Commit updater release
         run: |
-          rm -rf pulse-alarm-2.5.10.zip release-alarm
+          rm -rf pulse-suite-1.0.6.zip release-suite
           git config user.name 'PULSE Release Bot'
           git config user.email 'actions@users.noreply.github.com'
-          git add apk/PULSE-Stable-v2.5.10.apk apk/PULSE-Stable-Latest.apk latest.txt suite-latest.json
-          git commit -m 'Publish Pulse Alarm 2.5.10'
+          git add apk/PULSE-Suite-v1.0.6.apk apk/PULSE-Suite-Latest.apk suite-latest.txt suite-latest.json suite-history.json
+          git diff --cached --quiet || git commit -m 'Publish PULSE Suite 1.0.6'
           git push
