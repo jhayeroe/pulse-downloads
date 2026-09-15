@@ -22,6 +22,6 @@ $('s30').onclick=()=>snooze(30);
 $('sCustom').onclick=()=>{const v=Math.max(1,Math.min(180,Number(prompt('Snooze minutes (1-180)','60'))||60));snooze(v)};
 bindImportantHold($('doneBtn'),doneOccurrence,'DONE');
 bindImportantHold($('accomplishBtn'),accomplish,'ACCOMPLISH');
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){checkDue();if(session?.access_token){syncPersonal(true).catch(()=>{});loadAssignments().catch(()=>{});refreshPushRegistration().catch(()=>{})}}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){checkDue();if(session?.access_token){ensureFreshSession().then(()=>{syncPersonal(true).catch(()=>{});loadAssignments().catch(()=>{});refreshPushRegistration().catch(()=>{})}).catch(()=>{})}}});
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
-loadSession();loadLocal();renderAlarms();renderHistory();setAuthMode('signin');if(!session?.access_token){$('bottomNav').style.display='none';$('addAlarmBtn').style.display='none'}if(session?.access_token)loadApp().then(()=>{if(typeof applyLaunchIntent==='function')applyLaunchIntent()}).catch(e=>{signOut();$('loginStatus').textContent=e.message});
+loadLocal();renderAlarms();renderHistory();setAuthMode('signin');$('bottomNav').style.display='none';$('addAlarmBtn').style.display='none';restoreSession().then(ok=>{if(ok)return loadApp().then(()=>{if(typeof applyLaunchIntent==='function')applyLaunchIntent()});showSignedOut()}).catch(e=>{$('loginStatus').textContent='Could not restore session. Check your connection and try again.';showSignedOut()});
