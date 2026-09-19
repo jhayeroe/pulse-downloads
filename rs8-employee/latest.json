@@ -1,0 +1,12 @@
+{
+  "versionCode": 1,
+  "versionName": "1.0.0-test",
+  "apkUrl": "",
+  "sha256": "",
+  "changelog": "Initial RS8 Employee Android V1 test baseline.",
+  "rollback": {
+    "available": false,
+    "apkUrl": "",
+    "sha256": ""
+  }
+}
