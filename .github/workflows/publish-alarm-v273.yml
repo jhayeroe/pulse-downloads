@@ -1,0 +1,46 @@
+name: Publish Pulse Alarm 2.7.3
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-alarm-v273.yml'
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download verified signed build
+        env:
+          PULSE_APK_ZIP_URL: 'https://sdmntprseasia.oaiusercontent.com/files/00000000-a3b8-8207-9a48-e4e54daa8d53/raw?se=2026-10-15T06%3A03%3A53Z&sp=r&sv=2026-02-06&sr=b&scid=9ca13c4a-5281-4b39-acbf-ec69948b71e2&skoid=ca37c3ec-ab43-496e-be5f-4684c5519a26&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-15T01%3A03%3A54Z&ske=2026-10-16T01%3A03%3A54Z&sks=b&skv=2026-02-06&sig=dKDB4shoHrH9XdqJi1k%2BRGJ%2BIzfKzg06FmkI%2BHjsjps%3D'
+        run: curl --fail --location --retry 2 "$PULSE_APK_ZIP_URL" --output /tmp/pulse-alarm-273.zip
+      - name: Verify and stage Android update atomically
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, io, json, zipfile
+          raw=Path('/tmp/pulse-alarm-273.zip').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='12115b1c5217b0b5f67e5832002d52c07649db9e993969502bb4b752bf39fa52', 'Build archive mismatch'
+          z=zipfile.ZipFile(io.BytesIO(raw))
+          entries=[x for x in z.namelist() if x.endswith('.apk')]
+          assert len(entries)==1
+          apk=z.read(entries[0])
+          assert hashlib.sha256(apk).hexdigest()=='2937c47c7d7c2feb956949e2968b3c5f2e3c528537972b4016855ebf0b824d9e', 'APK mismatch'
+          Path('apk').mkdir(exist_ok=True)
+          Path('apk/PULSE-Stable-v2.7.3.apk').write_bytes(apk)
+          Path('apk/PULSE-Stable-Latest.apk').write_bytes(apk)
+          Path('latest.txt').write_text('2.7.3\n')
+          p=Path('suite-latest.json'); m=json.loads(p.read_text())
+          alarm=next(a for a in m['apps'] if a['key']=='alarm')
+          alarm['version']='2.7.3'
+          p.write_text(json.dumps(m,indent=2)+'\n')
+          PY
+      - name: Publish updater files together
+        run: |
+          git config user.name 'PULSE Release Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add apk/PULSE-Stable-v2.7.3.apk apk/PULSE-Stable-Latest.apk latest.txt suite-latest.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Publish Pulse Alarm 2.7.3 background push update'
+          git push
