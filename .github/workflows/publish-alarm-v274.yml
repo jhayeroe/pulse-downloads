@@ -1,0 +1,45 @@
+name: Publish Pulse Alarm 2.7.4
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-alarm-v274.yml'
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download verified signed build
+        env:
+          PULSE_APK_ZIP_URL: 'https://sdmntprwestus.oaiusercontent.com/files/00000000-ff24-8230-a58d-565e6b93a30b/raw?se=2026-10-15T06%3A21%3A04Z&sp=r&sv=2026-02-06&sr=b&scid=595a5a1c-51ee-417f-b737-58e09d0cbc76&skoid=ca37c3ec-ab43-496e-be5f-4684c5519a26&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-15T00%3A47%3A21Z&ske=2026-10-16T00%3A47%3A21Z&sks=b&skv=2026-02-06&sig=XLG5ypE/VnV%2BW1Z49Hanb4hFv6gSOJZPR%2ByxHBHg29A%3D'
+        run: curl --fail --location --retry 2 "$PULSE_APK_ZIP_URL" --output /tmp/pulse-alarm-274.zip
+      - name: Verify and stage Android update atomically
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, io, json, zipfile
+          raw=Path('/tmp/pulse-alarm-274.zip').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='f216f38bd93ca479bc00b0d2cf09af3291ef27b90923a8cfc5c7e73908cb6733', 'Build archive mismatch'
+          z=zipfile.ZipFile(io.BytesIO(raw))
+          entries=[x for x in z.namelist() if x.endswith('.apk')]
+          assert len(entries)==1
+          apk=z.read(entries[0])
+          Path('apk').mkdir(exist_ok=True)
+          Path('apk/PULSE-Stable-v2.7.4.apk').write_bytes(apk)
+          Path('apk/PULSE-Stable-Latest.apk').write_bytes(apk)
+          Path('latest.txt').write_text('2.7.4\n')
+          p=Path('suite-latest.json'); m=json.loads(p.read_text())
+          alarm=next(a for a in m['apps'] if a['key']=='alarm')
+          alarm['version']='2.7.4'
+          p.write_text(json.dumps(m,indent=2)+'\n')
+          PY
+      - name: Publish updater files together
+        run: |
+          git config user.name 'PULSE Release Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add apk/PULSE-Stable-v2.7.4.apk apk/PULSE-Stable-Latest.apk latest.txt suite-latest.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Publish Pulse Alarm 2.7.4 live alarm list fix'
+          git push
