@@ -1,0 +1,56 @@
+
+name: Publish PULSE Stable
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout downloads
+        uses: actions/checkout@v4
+
+      - name: Checkout Android source
+        uses: actions/checkout@v4
+        with:
+          repository: jhayeroe/pulse-android
+          ref: main
+          token: ${{ secrets.PULSE_SOURCE_TOKEN }}
+          path: source
+
+      - name: Install APK verification tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apksigner
+
+      - name: Verify and publish APK
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          VERSION=$(cat source/dist/latest.txt)
+          APK="source/dist/PULSE-Stable-v${VERSION}.apk"
+
+          test -s "$APK"
+          apksigner verify "$APK"
+
+          mkdir -p apk
+          cp "$APK" "apk/PULSE-Stable-v${VERSION}.apk"
+          cp "$APK" apk/PULSE-Stable-Latest.apk
+
+          printf '%s\n' "$VERSION" > latest.txt
+
+          git config user.name "PULSE Build Bot"
+          git config user.email "actions@users.noreply.github.com"
+
+          git add apk/ latest.txt
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish PULSE v${VERSION}"
+            git push
+          fi
