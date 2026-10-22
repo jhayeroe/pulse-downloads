@@ -1,16 +1,22 @@
-
 name: Publish PULSE Stable
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-pulse.yml'
 
 permissions:
   contents: write
 
+concurrency:
+  group: pulse-alarm-publish
+  cancel-in-progress: false
+
 jobs:
   publish:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout downloads
         uses: actions/checkout@v4
@@ -23,34 +29,53 @@ jobs:
           token: ${{ secrets.PULSE_SOURCE_TOKEN }}
           path: source
 
-      - name: Install APK verification tools
+      - name: Install signing verification tools
         run: |
           sudo apt-get update
           sudo apt-get install -y apksigner
 
-      - name: Verify and publish APK
+      - name: Verify and publish stable APK and updater manifest together
         shell: bash
         run: |
           set -euo pipefail
-
-          VERSION=$(cat source/dist/latest.txt)
+          VERSION=$(tr -d '\r\n' < source/dist/latest.txt)
+          test "$VERSION" = "2.7.6"
           APK="source/dist/PULSE-Stable-v${VERSION}.apk"
-
           test -s "$APK"
-          apksigner verify "$APK"
-
+          cmp "$APK" source/dist/PULSE-Stable-Latest.apk
+          apksigner verify --print-certs "$APK" > /tmp/pulse-new-cert.txt
+          apksigner verify --print-certs apk/PULSE-Stable-Latest.apk > /tmp/pulse-old-cert.txt
+          NEW_CERT=$(grep 'Signer #1 certificate SHA-256 digest:' /tmp/pulse-new-cert.txt | awk '{print $NF}')
+          OLD_CERT=$(grep 'Signer #1 certificate SHA-256 digest:' /tmp/pulse-old-cert.txt | awk '{print $NF}')
+          test -n "$NEW_CERT"
+          test "$NEW_CERT" = "$OLD_CERT"
           mkdir -p apk
           cp "$APK" "apk/PULSE-Stable-v${VERSION}.apk"
           cp "$APK" apk/PULSE-Stable-Latest.apk
-
           printf '%s\n' "$VERSION" > latest.txt
-
+          python3 - "$VERSION" <<'PY'
+          import json, sys
+          from pathlib import Path
+          version = sys.argv[1]
+          path = Path("suite-latest.json")
+          manifest = json.loads(path.read_text(encoding="utf-8"))
+          alarms = [a for a in manifest["apps"] if a.get("key") == "alarm"]
+          assert len(alarms) == 1, "Expected one Pulse Alarm updater entry"
+          alarm = alarms[0]
+          assert alarm["package"] == "com.pulse.alarm.stable", "Wrong alarm package"
+          def parts(value): return tuple(int(part) for part in value.split("."))
+          assert parts(version) >= parts(alarm["version"]), "Refusing version downgrade"
+          alarm["version"] = version
+          alarm["url"] = "https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/apk/PULSE-Stable-Latest.apk"
+          path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+          PY
+          sha256sum "$APK" "apk/PULSE-Stable-Latest.apk"
           git config user.name "PULSE Build Bot"
           git config user.email "actions@users.noreply.github.com"
-
-          git add apk/ latest.txt
-
-          if ! git diff --cached --quiet; then
-            git commit -m "Publish PULSE v${VERSION}"
-            git push
+          git add "apk/PULSE-Stable-v${VERSION}.apk" apk/PULSE-Stable-Latest.apk latest.txt suite-latest.json
+          if git diff --cached --quiet; then
+            echo "Pulse Alarm ${VERSION} already published."
+            exit 0
           fi
+          git commit -m "Publish Pulse Alarm v${VERSION} to in-app updater [skip ci]"
+          git push
