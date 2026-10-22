@@ -39,7 +39,7 @@ jobs:
         run: |
           set -euo pipefail
           VERSION=$(tr -d '\r\n' < source/dist/latest.txt)
-          test "$VERSION" = "2.7.6"
+          test "$VERSION" = "2.7.7"
           APK="source/dist/PULSE-Stable-v${VERSION}.apk"
           test -s "$APK"
           cmp "$APK" source/dist/PULSE-Stable-Latest.apk
