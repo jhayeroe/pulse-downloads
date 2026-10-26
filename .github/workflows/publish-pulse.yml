@@ -31,9 +31,7 @@ jobs:
           path: source
 
       - name: Install signing verification tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y apksigner
+        run: sudo apt-get install -y apksigner
 
       - name: Verify and publish stable APK and updater manifest together
         shell: bash
