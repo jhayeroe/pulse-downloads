@@ -1,5 +1,5 @@
 name: Publish PULSE Stable
-# Retry after Android 2.7.7 signed APK staging completed
+# Publish Android 2.7.8 after signed APK staging completed
 
 on:
   workflow_dispatch:
@@ -38,7 +38,7 @@ jobs:
         run: |
           set -euo pipefail
           VERSION=$(tr -d '\r\n' < source/dist/latest.txt)
-          test "$VERSION" = "2.7.7"
+          test "$VERSION" = "2.7.8"
           APK="source/dist/PULSE-Stable-v${VERSION}.apk"
           test -s "$APK"
           cmp "$APK" source/dist/PULSE-Stable-Latest.apk
