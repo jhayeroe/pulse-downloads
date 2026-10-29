@@ -396,7 +396,7 @@ function Menu {
         '8'{Uninstall;return}
         'D'{Doctor}
         'L'{OpenMessengerLogin}
-        '0'{return}
+        '0'{[Environment]::Exit(0)}
         default{Write-Host 'Invalid option.'}
       }
     }catch{Write-Host $_.Exception.Message -ForegroundColor Red}
