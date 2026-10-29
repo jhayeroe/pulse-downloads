@@ -1,4 +1,4 @@
-# RS8 Web Guard v0.2 - Facebook browsing blocked, Messenger excepted
+# RS8 Web Guard v0.3 - fix URL policy numbering
 # Public installer; admin code is created locally and never stored in GitHub.
 # Domain blocking only. Facebook is deliberately excluded to preserve Messenger.
 [CmdletBinding()]
@@ -92,7 +92,10 @@ function Init {
     $script:state=Get-Content $store -Raw -Encoding UTF8 | ConvertFrom-Json
     $changed=$false
     if(-not $script:state.PSObject.Properties['SchemaVersion']){
-      $script:state | Add-Member -NotePropertyName SchemaVersion -NotePropertyValue 2
+      $script:state | Add-Member -NotePropertyName SchemaVersion -NotePropertyValue 3
+      $changed=$true
+    }elseif([int]$script:state.SchemaVersion -lt 3){
+      $script:state.SchemaVersion=3
       $changed=$true
     }
     if(-not $script:state.PSObject.Properties['FacebookEnabled']){
@@ -119,7 +122,7 @@ function Init {
   & icacls.exe $root '/inheritance:r' '/grant:r' '*S-1-5-18:(OI)(CI)F' '*S-1-5-32-544:(OI)(CI)F' | Out-Null
   if($LASTEXITCODE -ne 0){throw 'Could not secure settings folder.'}
   $script:state=[pscustomobject]@{
-    SchemaVersion=2;Salt='';Hash='';Domains=@();FacebookEnabled=$true
+    SchemaVersion=3;Salt='';Hash='';Domains=@();FacebookEnabled=$true
     Edge=@();Chrome=@();Brave=@();Firefox=@()
     EdgeAllow=@();ChromeAllow=@();BraveAllow=@();FirefoxAllow=@()
   }
@@ -185,8 +188,8 @@ function ApplyPolicy([string]$path,[string]$field,[string[]]$patterns) {
   foreach($pattern in @($patterns)){
     $used=@((Get-ItemProperty -LiteralPath $path).PSObject.Properties.Name | Where-Object {$_ -match '^\d+$'})
     $slot=$null
-    for($i=700;$i -le 999;$i++){if([string]$i -notin $used){$slot=[string]$i;break}}
-    if($null -eq $slot){throw 'Registry policy slots 700-999 are full.'}
+    for($i=1;$i -le 1000;$i++){if([string]$i -notin $used){$slot=[string]$i;break}}
+    if($null -eq $slot){throw 'Registry policy list slots 1-1000 are full.'}
     New-ItemProperty -Path $path -Name $slot -Value $pattern -PropertyType String -Force | Out-Null
     $new+= [pscustomobject]@{Index=$slot;Pattern=$pattern}
   }
