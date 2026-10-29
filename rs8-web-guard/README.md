@@ -1,4 +1,4 @@
-# RS8 Web Guard v0.2
+# RS8 Web Guard v0.3
 
 PowerShell site restrictions for RS8-managed Windows desktops. The public source is inspectable and hosted on GitHub.
 
@@ -11,7 +11,7 @@ irm https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/w.ps1 | iex
 ```
 
 - New PC: create a local RS8 admin code (8+ characters). The installer configures policies immediately.
-- Existing v0.1 PC: the same command migrates existing settings, automatically updates the local launcher, and enables Facebook restriction.
+- Existing RS8 Web Guard PC: rerun the same short command to migrate and repair the Windows registry policy lists (now numbered from 1), update the local launcher, and enable Facebook blocking.
 - Then use `rs8web` to open the vertical menu.
 
 ## Facebook restriction (enabled by default)
@@ -30,11 +30,20 @@ rs8web list
 rs8web remove youtube.com
 rs8web facebook-on
 rs8web facebook-off
+rs8web doctor
 rs8web update
 rs8web uninstall
 ```
 
 Removing domains, disabling Facebook blocking, updating the tool, changing the code and uninstalling require an RS8 admin code and/or Windows administrator privileges. The admin code is **not** stored on GitHub; only a salted verifier is stored locally in an ACL-restricted folder. A Windows administrator can still bypass or remove this local control.
+
+## If Facebook still loads
+
+1. Rerun the short GitHub command in **PowerShell as Administrator**. Do not rely on an older locally installed `rs8web` until it has been upgraded.
+2. Select **D. Diagnose browser policies** or run `rs8web doctor`. This checks for browser policy registry entries.
+3. In the actual browser, open `chrome://policy`, `edge://policy`, `brave://policy` or Firefox `about:policies`, then reload. Confirm `URLBlocklist` contains `facebook.com` and `URLAllowlist` contains `facebook.com/messages`, with an OK status. Registry presence does **not** prove browser enforcement.
+4. Fully close/reopen the browser and test the Facebook Home and Messages URLs.
+5. If the browser marks policies unsupported/ignored (for example on some Windows Home systems, or certain browser profiles), stronger managed-browser enrollment or endpoint web filtering is necessary.
 
 ## Limits and rollout
 
