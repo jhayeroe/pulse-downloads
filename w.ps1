@@ -1,10 +1,10 @@
-# RS8 Web Guard v0.3 - fix URL policy numbering
+# RS8 Web Guard v0.4 - allow Messenger sign-in while Facebook Home stays blocked
 # Public installer; admin code is created locally and never stored in GitHub.
 # Domain blocking only. Facebook is deliberately excluded to preserve Messenger.
 [CmdletBinding()]
 param(
   [Parameter(Position=0)]
-  [ValidateSet('menu','add','remove','list','reapply','change-pin','update','uninstall','facebook-on','facebook-off','doctor','help')]
+  [ValidateSet('menu','add','remove','list','reapply','change-pin','update','uninstall','facebook-on','facebook-off','doctor','login','help')]
   [string]$Action = 'menu',
   [Parameter(Position=1)][string]$Domain = ''
 )
@@ -92,10 +92,10 @@ function Init {
     $script:state=Get-Content $store -Raw -Encoding UTF8 | ConvertFrom-Json
     $changed=$false
     if(-not $script:state.PSObject.Properties['SchemaVersion']){
-      $script:state | Add-Member -NotePropertyName SchemaVersion -NotePropertyValue 3
+      $script:state | Add-Member -NotePropertyName SchemaVersion -NotePropertyValue 4
       $changed=$true
-    }elseif([int]$script:state.SchemaVersion -lt 3){
-      $script:state.SchemaVersion=3
+    }elseif([int]$script:state.SchemaVersion -lt 4){
+      $script:state.SchemaVersion=4
       $changed=$true
     }
     if(-not $script:state.PSObject.Properties['FacebookEnabled']){
@@ -122,7 +122,7 @@ function Init {
   & icacls.exe $root '/inheritance:r' '/grant:r' '*S-1-5-18:(OI)(CI)F' '*S-1-5-32-544:(OI)(CI)F' | Out-Null
   if($LASTEXITCODE -ne 0){throw 'Could not secure settings folder.'}
   $script:state=[pscustomobject]@{
-    SchemaVersion=3;Salt='';Hash='';Domains=@();FacebookEnabled=$true
+    SchemaVersion=4;Salt='';Hash='';Domains=@();FacebookEnabled=$true
     Edge=@();Chrome=@();Brave=@();Firefox=@()
     EdgeAllow=@();ChromeAllow=@();BraveAllow=@();FirefoxAllow=@()
   }
@@ -209,10 +209,14 @@ function ApplyAll {
     $allows+=@(
       'facebook.com/messages',
       'facebook.com/login',
+      'facebook.com/login.php',
       'facebook.com/checkpoint',
       'facebook.com/two_factor',
       'facebook.com/recover',
-      'facebook.com/confirmemail'
+      'facebook.com/confirmemail',
+      'facebook.com/connect/login_success.html',
+      'facebook.com/ajax/login',
+      'facebook.com/api/graphql'
     )
   }
   ApplyPolicy 'HKLM:\SOFTWARE\Policies\Microsoft\Edge\URLBlocklist' 'Edge' $blocks
@@ -231,7 +235,10 @@ function ApplyAll {
       '*://*.facebook.com/checkpoint*',
       '*://*.facebook.com/two_factor*',
       '*://*.facebook.com/recover*',
-      '*://*.facebook.com/confirmemail*'
+      '*://*.facebook.com/confirmemail*',
+      '*://*.facebook.com/connect/login_success.html*',
+      '*://*.facebook.com/ajax/login*',
+      '*://*.facebook.com/api/graphql*'
     )
   }
   ApplyPolicy 'HKLM:\SOFTWARE\Policies\Mozilla\Firefox\WebsiteFilter\Block' 'Firefox' $ff
@@ -291,6 +298,14 @@ function Doctor {
       Write-Host 'Chrome managed URL policies may be unsupported on Windows Home.' -ForegroundColor Yellow
     }
   }catch{}
+}
+function OpenMessengerLogin {
+  $url='https://www.facebook.com/login.php?next=https%3A%2F%2Fwww.facebook.com%2Fmessages%2F'
+  Write-Host 'Opening official Facebook sign-in for Messenger...' -ForegroundColor Cyan
+  Write-Host ('Login URL: '+$url)
+  Write-Host 'After signing in, go to https://www.facebook.com/messages/'
+  Write-Host 'If redirected to a blocked page, contact RS8 IT.'
+  Start-Process -FilePath $url
 }
 function ListSites {
   Write-Host ''
@@ -364,6 +379,7 @@ function Menu {
     Write-Host '  8. Update from GitHub'
     Write-Host '  9. Uninstall (admin code)'
     Write-Host '  D. Diagnose browser policies'
+    Write-Host '  L. Open Messenger sign-in page'
     Write-Host '  0. Exit'
     Write-Host ''
     $answer=Read-Host 'Select option'
@@ -379,6 +395,7 @@ function Menu {
         '8'{NeedAdmin;VerifyPin;DownloadLocal;ApplyAll;Write-Host 'Update downloaded. Reopen rs8web for the latest menu.'}
         '9'{Uninstall;return}
         'D'{Doctor}
+        'L'{OpenMessengerLogin}
         '0'{return}
         default{Write-Host 'Invalid option.'}
       }
@@ -403,5 +420,6 @@ try{
     'facebook-on'{FacebookSwitch $true}
     'facebook-off'{FacebookSwitch $false}
     'doctor'{Doctor}
+    'login'{OpenMessengerLogin}
   }
 }catch{Write-Host ('ERROR: '+$_.Exception.Message) -ForegroundColor Red;exit 1}
