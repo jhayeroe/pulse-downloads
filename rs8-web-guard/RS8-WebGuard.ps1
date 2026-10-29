@@ -1,10 +1,10 @@
-# RS8 Web Guard v0.4 - allow Messenger sign-in while Facebook Home stays blocked
-# Public installer; admin code is created locally and never stored in GitHub.
-# Domain blocking only. Facebook is deliberately excluded to preserve Messenger.
+# RS8 Web Guard v0.5 - fixed built-in admin code; noninteractive installation
+# Public GitHub installer. The built-in code is stored as a one-way verifier, not plaintext.
+# Managed browser URL policies restrict Facebook browsing while allowing Messenger routes.
 [CmdletBinding()]
 param(
   [Parameter(Position=0)]
-  [ValidateSet('menu','add','remove','list','reapply','change-pin','update','uninstall','facebook-on','facebook-off','doctor','login','help')]
+  [ValidateSet('menu','add','remove','list','reapply','update','uninstall','facebook-on','facebook-off','doctor','login','help')]
   [string]$Action = 'menu',
   [Parameter(Position=1)][string]$Domain = ''
 )
@@ -18,6 +18,10 @@ $source='https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-web
 $begin='# BEGIN RS8 WEB GUARD MANAGED'
 $end='# END RS8 WEB GUARD MANAGED'
 $state=$null
+# Built-in company-wide passcode verifier (PBKDF2-SHA256, 150000 rounds).
+# One shared passcode is convenient but weaker than individual device credentials.
+$fixedSalt='K1qbovfinuj9vX5SasoVpg=='
+$fixedHash='CKE9upCsvpP/A0MTThAHnuVA9OUJgrNfBiIOZ7EFszg='
 
 function Admin {
   $p=New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
@@ -37,22 +41,6 @@ function Digest([string]$pin,[string]$salt) {
   $k=[Security.Cryptography.Rfc2898DeriveBytes]::new($bytes,[Convert]::FromBase64String($salt),150000,[Security.Cryptography.HashAlgorithmName]::SHA256)
   try {return [Convert]::ToBase64String($k.GetBytes(32))}
   finally {$k.Dispose();[Array]::Clear($bytes,0,$bytes.Length)}
-}
-function SetPin {
-  for($i=0;$i -lt 3;$i++){
-    $a=Secret 'Create RS8 admin code (8+ characters)'
-    $b=Secret 'Confirm code'
-    if($a.Length -ge 8 -and $a -ceq $b){
-      $salt=New-Object byte[] 16
-      $rng=[Security.Cryptography.RandomNumberGenerator]::Create()
-      try {$rng.GetBytes($salt)} finally {$rng.Dispose()}
-      $script:state.Salt=[Convert]::ToBase64String($salt)
-      $script:state.Hash=Digest $a $script:state.Salt
-      return
-    }
-    Write-Host 'Code too short or did not match.' -ForegroundColor Yellow
-  }
-  throw 'Could not create admin code.'
 }
 function VerifyPin {
   for($i=0;$i -lt 3;$i++){
@@ -92,10 +80,25 @@ function Init {
     $script:state=Get-Content $store -Raw -Encoding UTF8 | ConvertFrom-Json
     $changed=$false
     if(-not $script:state.PSObject.Properties['SchemaVersion']){
-      $script:state | Add-Member -NotePropertyName SchemaVersion -NotePropertyValue 4
+      $script:state | Add-Member -NotePropertyName SchemaVersion -NotePropertyValue 5
       $changed=$true
-    }elseif([int]$script:state.SchemaVersion -lt 4){
-      $script:state.SchemaVersion=4
+    }elseif([int]$script:state.SchemaVersion -lt 5){
+      $script:state.SchemaVersion=5
+      $changed=$true
+    }
+    # Upgrade all prior per-computer passcodes to the new fixed code without prompting.
+    if(-not $script:state.PSObject.Properties['Salt']){
+      $script:state | Add-Member -NotePropertyName Salt -NotePropertyValue $fixedSalt
+      $changed=$true
+    }elseif($script:state.Salt -cne $fixedSalt){
+      $script:state.Salt=$fixedSalt
+      $changed=$true
+    }
+    if(-not $script:state.PSObject.Properties['Hash']){
+      $script:state | Add-Member -NotePropertyName Hash -NotePropertyValue $fixedHash
+      $changed=$true
+    }elseif($script:state.Hash -cne $fixedHash){
+      $script:state.Hash=$fixedHash
       $changed=$true
     }
     if(-not $script:state.PSObject.Properties['FacebookEnabled']){
@@ -113,7 +116,7 @@ function Init {
       SaveState
       DownloadLocal
       ApplyAll
-      Write-Host 'Upgraded existing setup: Facebook browsing is now blocked, with Messenger and sign-in exceptions.' -ForegroundColor Green
+      Write-Host 'Updated RS8 Web Guard and applied the built-in admin code. Existing block settings preserved.' -ForegroundColor Green
     }
     return
   }
@@ -122,12 +125,11 @@ function Init {
   & icacls.exe $root '/inheritance:r' '/grant:r' '*S-1-5-18:(OI)(CI)F' '*S-1-5-32-544:(OI)(CI)F' | Out-Null
   if($LASTEXITCODE -ne 0){throw 'Could not secure settings folder.'}
   $script:state=[pscustomobject]@{
-    SchemaVersion=4;Salt='';Hash='';Domains=@();FacebookEnabled=$true
+    SchemaVersion=5;Salt=$fixedSalt;Hash=$fixedHash;Domains=@();FacebookEnabled=$true
     Edge=@();Chrome=@();Brave=@();Firefox=@()
     EdgeAllow=@();ChromeAllow=@();BraveAllow=@();FirefoxAllow=@()
   }
-  Write-Host 'RS8 Web Guard - first-time setup' -ForegroundColor Cyan
-  SetPin
+  Write-Host 'RS8 Web Guard - applying protection with built-in admin code...' -ForegroundColor Cyan
   SaveState
   DownloadLocal
   ApplyAll
@@ -375,9 +377,8 @@ function Menu {
     Write-Host '  4. Enable Facebook restriction'
     Write-Host '  5. Disable Facebook restriction (admin code)'
     Write-Host '  6. Reapply website policies'
-    Write-Host '  7. Change admin code'
-    Write-Host '  8. Update from GitHub'
-    Write-Host '  9. Uninstall (admin code)'
+    Write-Host '  7. Update from GitHub'
+    Write-Host '  8. Uninstall (admin code)'
     Write-Host '  D. Diagnose browser policies'
     Write-Host '  L. Open Messenger sign-in page'
     Write-Host '  0. Exit'
@@ -391,9 +392,8 @@ function Menu {
         '4'{FacebookSwitch $true}
         '5'{FacebookSwitch $false}
         '6'{ApplyAll}
-        '7'{NeedAdmin;VerifyPin;SetPin;SaveState}
-        '8'{NeedAdmin;VerifyPin;DownloadLocal;ApplyAll;Write-Host 'Update downloaded. Reopen rs8web for the latest menu.'}
-        '9'{Uninstall;return}
+        '7'{NeedAdmin;DownloadLocal;ApplyAll;Write-Host 'Update downloaded. Reopen rs8web for the latest menu.'}
+        '8'{Uninstall;return}
         'D'{Doctor}
         'L'{OpenMessengerLogin}
         '0'{return}
@@ -414,8 +414,7 @@ try{
     'remove'{RemoveSite $Domain}
     'list'{ListSites}
     'reapply'{ApplyAll}
-    'change-pin'{NeedAdmin;VerifyPin;SetPin;SaveState}
-    'update'{NeedAdmin;VerifyPin;DownloadLocal}
+    'update'{NeedAdmin;DownloadLocal}
     'uninstall'{Uninstall}
     'facebook-on'{FacebookSwitch $true}
     'facebook-off'{FacebookSwitch $false}
