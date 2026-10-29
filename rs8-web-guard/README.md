@@ -1,4 +1,4 @@
-# RS8 Web Guard v0.3
+# RS8 Web Guard v0.4
 
 PowerShell site restrictions for RS8-managed Windows desktops. The public source is inspectable and hosted on GitHub.
 
@@ -21,6 +21,18 @@ irm https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/w.ps1 | iex
 - Facebook authentication/recovery paths: **ALLOWED** to support sign-in. Some login flows or Messenger features may require further exceptions after pilot testing.
 - This is a block page, **not a redirect** to Messenger. There is no blanket Facebook hosts-file block because that would also break Messages.
 
+## Facebook Messenger sign-in
+
+Facebook's home URL `https://www.facebook.com/` is deliberately blocked. That same homepage can also act as a login screen, so employees **must not** start their sign-in there.
+
+Use **L. Open Messenger sign-in page** in the vertical admin menu or this official direct URL:
+
+`https://www.facebook.com/login.php?next=https%3A%2F%2Fwww.facebook.com%2Fmessages%2F`
+
+The browser policy has separate allowlist exceptions for Facebook login, checkpoint/2FA, account recovery, Messenger and key authentication endpoints. After sign-in, users are directed toward `https://www.facebook.com/messages/`. The News Feed root URL stays blocked. A direct login link can also be distributed via work chat, so staff do not need to run PowerShell to log in.
+
+**Limit:** Facebook may vary its login flow and redirect some users through the blocked root homepage. The script has not been live-tested in every browser or account state, so this behavior is not guaranteed. If that happens, IT can temporarily disable and then re-enable Facebook blocking with the RS8 code while supervising a one-time login.
+
 ## Other commands
 
 ```powershell
@@ -31,6 +43,7 @@ rs8web remove youtube.com
 rs8web facebook-on
 rs8web facebook-off
 rs8web doctor
+rs8web login
 rs8web update
 rs8web uninstall
 ```
