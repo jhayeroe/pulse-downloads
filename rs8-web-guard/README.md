@@ -1,4 +1,4 @@
-# RS8 Web Guard v0.4
+# RS8 Web Guard v0.5
 
 PowerShell site restrictions for RS8-managed Windows desktops. The public source is inspectable and hosted on GitHub.
 
@@ -10,8 +10,8 @@ Open **Windows PowerShell as Administrator**, then run:
 irm https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/w.ps1 | iex
 ```
 
-- New PC: create a local RS8 admin code (8+ characters). The installer configures policies immediately.
-- Existing RS8 Web Guard PC: rerun the same short command to migrate and repair the Windows registry policy lists (now numbered from 1), update the local launcher, and enable Facebook blocking.
+- New PC: **no code prompt** during installation. The installer automatically applies the website restrictions using the preconfigured, shared RS8 admin code.
+- Existing RS8 Web Guard PC: rerun the same short command to upgrade the local launcher, replace the previous device-specific code with the preconfigured RS8 code, and preserve the existing blocklist and Facebook on/off setting. Previously disabled Facebook restrictions are not automatically re-enabled.
 - Then use `rs8web` to open the vertical menu.
 
 ## Facebook restriction (enabled by default)
@@ -48,7 +48,9 @@ rs8web update
 rs8web uninstall
 ```
 
-Removing domains, disabling Facebook blocking, updating the tool, changing the code and uninstalling require an RS8 admin code and/or Windows administrator privileges. The admin code is **not** stored on GitHub; only a salted verifier is stored locally in an ACL-restricted folder. A Windows administrator can still bypass or remove this local control.
+**Passcode behavior:** No passcode required for install, adding a blocked domain, reapplying policies, or updating. The fixed shared admin code is required for removing a blocked domain, disabling Facebook protection, or uninstalling. The change-code menu option has been removed. The installer stores a PBKDF2 salted verifier in the public source and local ACL-protected settings, **not the code in plaintext**. Because the verifier is public and shared by all computers, this provides only a deterrent, not strong authentication. Anyone with Windows administrator privileges can remove local restrictions regardless of the code. Use standard-user employee accounts and company-managed filtering for stronger protection.
+
+**Important:** Do not distribute the shared code in employee-facing instructions. This public GitHub design cannot keep a shared code confidential against a determined administrator, or prevent offline attempts to recover it.
 
 ## If Facebook still loads
 
