@@ -4,7 +4,7 @@
 [CmdletBinding()]
 param(
   [Parameter(Position=0)]
-  [ValidateSet('menu','add','remove','list','reapply','change-pin','update','uninstall','facebook-on','facebook-off','help')]
+  [ValidateSet('menu','add','remove','list','reapply','change-pin','update','uninstall','facebook-on','facebook-off','doctor','help')]
   [string]$Action = 'menu',
   [Parameter(Position=1)][string]$Domain = ''
 )
@@ -250,6 +250,48 @@ function FacebookSwitch([bool]$enable) {
   SaveState
   ApplyAll
 }
+function Doctor {
+  Write-Host ''
+  Write-Host 'RS8 WEB GUARD - POLICY DIAGNOSTICS' -ForegroundColor Cyan
+  Write-Host ("Facebook blocking enabled: {0}" -f $script:state.FacebookEnabled)
+  foreach($browser in @('Chrome','Edge','Brave')){
+    switch($browser){
+      'Chrome'{$base='HKLM:\SOFTWARE\Policies\Google\Chrome'}
+      'Edge'{$base='HKLM:\SOFTWARE\Policies\Microsoft\Edge'}
+      'Brave'{$base='HKLM:\SOFTWARE\Policies\BraveSoftware\Brave'}
+    }
+    $bk=Join-Path $base 'URLBlocklist'
+    $ak=Join-Path $base 'URLAllowlist'
+    $b=@();$a=@()
+    if(Test-Path $bk){
+      $b=@((Get-ItemProperty -LiteralPath $bk).PSObject.Properties | Where-Object {$_.Name -match '^\d+$'} | ForEach-Object {$_.Value})
+    }
+    if(Test-Path $ak){
+      $a=@((Get-ItemProperty -LiteralPath $ak).PSObject.Properties | Where-Object {$_.Name -match '^\d+$'} | ForEach-Object {$_.Value})
+    }
+    if('facebook.com' -in $b -and 'facebook.com/messages' -in $a){
+      Write-Host ("{0}: registry rules PRESENT" -f $browser) -ForegroundColor Green
+    }else{
+      Write-Host ("{0}: registry rules MISSING" -f $browser) -ForegroundColor Red
+    }
+  }
+  Write-Host ''
+  Write-Host 'Now inspect your ACTUAL browser policy status:'
+  Write-Host '  Chrome: chrome://policy'
+  Write-Host '  Edge: edge://policy'
+  Write-Host '  Brave: brave://policy'
+  Write-Host '  Firefox: about:policies'
+  Write-Host 'Click Reload policies. Look for URLBlocklist and URLAllowlist.'
+  Write-Host 'Browser status must be OK, not Ignored / Unsupported / Error.'
+  Write-Host 'Presence in the Windows registry alone does not prove enforcement.'
+  try{
+    $os=Get-CimInstance -ClassName Win32_OperatingSystem -ErrorAction Stop
+    Write-Host ("Windows edition: {0}" -f $os.Caption)
+    if($os.Caption -match 'Home'){
+      Write-Host 'Chrome managed URL policies may be unsupported on Windows Home.' -ForegroundColor Yellow
+    }
+  }catch{}
+}
 function ListSites {
   Write-Host ''
   if($script:state.FacebookEnabled){
@@ -321,6 +363,7 @@ function Menu {
     Write-Host '  7. Change admin code'
     Write-Host '  8. Update from GitHub'
     Write-Host '  9. Uninstall (admin code)'
+    Write-Host '  D. Diagnose browser policies'
     Write-Host '  0. Exit'
     Write-Host ''
     $answer=Read-Host 'Select option'
@@ -335,6 +378,7 @@ function Menu {
         '7'{NeedAdmin;VerifyPin;SetPin;SaveState}
         '8'{NeedAdmin;VerifyPin;DownloadLocal;ApplyAll;Write-Host 'Update downloaded. Reopen rs8web for the latest menu.'}
         '9'{Uninstall;return}
+        'D'{Doctor}
         '0'{return}
         default{Write-Host 'Invalid option.'}
       }
@@ -358,5 +402,6 @@ try{
     'uninstall'{Uninstall}
     'facebook-on'{FacebookSwitch $true}
     'facebook-off'{FacebookSwitch $false}
+    'doctor'{Doctor}
   }
 }catch{Write-Host ('ERROR: '+$_.Exception.Message) -ForegroundColor Red;exit 1}
