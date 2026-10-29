@@ -1,10 +1,10 @@
-# RS8 Web Guard v0.1
+# RS8 Web Guard v0.2 - Facebook browsing blocked, Messenger excepted
 # Public installer; admin code is created locally and never stored in GitHub.
 # Domain blocking only. Facebook is deliberately excluded to preserve Messenger.
 [CmdletBinding()]
 param(
   [Parameter(Position=0)]
-  [ValidateSet('menu','add','remove','list','reapply','change-pin','update','uninstall','help')]
+  [ValidateSet('menu','add','remove','list','reapply','change-pin','update','uninstall','facebook-on','facebook-off','help')]
   [string]$Action = 'menu',
   [Parameter(Position=1)][string]$Domain = ''
 )
@@ -90,18 +90,46 @@ function DownloadLocal {
 function Init {
   if(Test-Path $store){
     $script:state=Get-Content $store -Raw -Encoding UTF8 | ConvertFrom-Json
+    $changed=$false
+    if(-not $script:state.PSObject.Properties['SchemaVersion']){
+      $script:state | Add-Member -NotePropertyName SchemaVersion -NotePropertyValue 2
+      $changed=$true
+    }
+    if(-not $script:state.PSObject.Properties['FacebookEnabled']){
+      $script:state | Add-Member -NotePropertyName FacebookEnabled -NotePropertyValue $true
+      $changed=$true
+    }
+    foreach($field in @('EdgeAllow','ChromeAllow','BraveAllow','FirefoxAllow')){
+      if(-not $script:state.PSObject.Properties[$field]){
+        $script:state | Add-Member -NotePropertyName $field -NotePropertyValue @()
+        $changed=$true
+      }
+    }
+    if($changed){
+      NeedAdmin
+      SaveState
+      DownloadLocal
+      ApplyAll
+      Write-Host 'Upgraded existing setup: Facebook browsing is now blocked, with Messenger and sign-in exceptions.' -ForegroundColor Green
+    }
     return
   }
   NeedAdmin
   New-Item -ItemType Directory -Path $root -Force | Out-Null
   & icacls.exe $root '/inheritance:r' '/grant:r' '*S-1-5-18:(OI)(CI)F' '*S-1-5-32-544:(OI)(CI)F' | Out-Null
   if($LASTEXITCODE -ne 0){throw 'Could not secure settings folder.'}
-  $script:state=[pscustomobject]@{Salt='';Hash='';Domains=@();Edge=@();Chrome=@();Brave=@();Firefox=@()}
+  $script:state=[pscustomobject]@{
+    SchemaVersion=2;Salt='';Hash='';Domains=@();FacebookEnabled=$true
+    Edge=@();Chrome=@();Brave=@();Firefox=@()
+    EdgeAllow=@();ChromeAllow=@();BraveAllow=@();FirefoxAllow=@()
+  }
   Write-Host 'RS8 Web Guard - first-time setup' -ForegroundColor Cyan
   SetPin
   SaveState
   DownloadLocal
-  Write-Host 'Installed. Run rs8web to open the menu.' -ForegroundColor Green
+  ApplyAll
+  Write-Host 'Installed. Facebook Home BLOCKED; Facebook Messages ALLOWED.' -ForegroundColor Green
+  Write-Host 'Run rs8web to open the menu.' -ForegroundColor Green
 }
 function CleanDomain([string]$text) {
   $v=$text.Trim().ToLowerInvariant()
@@ -113,7 +141,7 @@ function CleanDomain([string]$text) {
   if($v.StartsWith('www.')){$v=$v.Substring(4)}
   if($v -notmatch '^([a-z0-9-]+\.)+[a-z]{2,63}$'){throw 'Enter a domain such as youtube.com'}
   if($v -eq 'facebook.com' -or $v -like '*.facebook.com' -or $v -eq 'messenger.com'){
-    throw 'Facebook and Messenger are excluded to keep company messaging accessible.'
+    throw 'Facebook is managed separately (blocked by default, Messages allowed). Use Facebook on/off menu commands.'
   }
   return $v
 }
@@ -166,21 +194,74 @@ function ApplyPolicy([string]$path,[string]$field,[string[]]$patterns) {
   SaveState
 }
 function ApplyAll {
+  NeedAdmin
   ApplyHosts
   $sites=@(Effective)
-  ApplyPolicy 'HKLM:\SOFTWARE\Policies\Microsoft\Edge\URLBlocklist' 'Edge' $sites
-  ApplyPolicy 'HKLM:\SOFTWARE\Policies\Google\Chrome\URLBlocklist' 'Chrome' $sites
-  ApplyPolicy 'HKLM:\SOFTWARE\Policies\BraveSoftware\Brave\URLBlocklist' 'Brave' $sites
+  $blocks=@($sites)
+  $allows=@()
+  if($script:state.FacebookEnabled){
+    # Chromium enterprise URL policy: block Facebook as a site, allow Messenger & authentication paths.
+    # These policies are URL-based; a plain hosts-file Facebook block would also block Messages.
+    $blocks+=@('facebook.com')
+    $allows+=@(
+      'facebook.com/messages',
+      'facebook.com/login',
+      'facebook.com/checkpoint',
+      'facebook.com/two_factor',
+      'facebook.com/recover',
+      'facebook.com/confirmemail'
+    )
+  }
+  ApplyPolicy 'HKLM:\SOFTWARE\Policies\Microsoft\Edge\URLBlocklist' 'Edge' $blocks
+  ApplyPolicy 'HKLM:\SOFTWARE\Policies\Microsoft\Edge\URLAllowlist' 'EdgeAllow' $allows
+  ApplyPolicy 'HKLM:\SOFTWARE\Policies\Google\Chrome\URLBlocklist' 'Chrome' $blocks
+  ApplyPolicy 'HKLM:\SOFTWARE\Policies\Google\Chrome\URLAllowlist' 'ChromeAllow' $allows
+  ApplyPolicy 'HKLM:\SOFTWARE\Policies\BraveSoftware\Brave\URLBlocklist' 'Brave' $blocks
+  ApplyPolicy 'HKLM:\SOFTWARE\Policies\BraveSoftware\Brave\URLAllowlist' 'BraveAllow' $allows
   $ff=@($sites | ForEach-Object {"*://*.$_/*"})
+  $ffAllow=@()
+  if($script:state.FacebookEnabled){
+    $ff+=@('*://*.facebook.com/*')
+    $ffAllow+=@(
+      '*://*.facebook.com/messages*',
+      '*://*.facebook.com/login*',
+      '*://*.facebook.com/checkpoint*',
+      '*://*.facebook.com/two_factor*',
+      '*://*.facebook.com/recover*',
+      '*://*.facebook.com/confirmemail*'
+    )
+  }
   ApplyPolicy 'HKLM:\SOFTWARE\Policies\Mozilla\Firefox\WebsiteFilter\Block' 'Firefox' $ff
-  Write-Host 'Restrictions updated. Restart browsers.' -ForegroundColor Green
+  ApplyPolicy 'HKLM:\SOFTWARE\Policies\Mozilla\Firefox\WebsiteFilter\Exceptions' 'FirefoxAllow' $ffAllow
+  Write-Host 'Policies updated. Close and reopen browsers to verify.' -ForegroundColor Green
+}
+function FacebookSwitch([bool]$enable) {
+  NeedAdmin
+  if([bool]$script:state.FacebookEnabled -eq $enable){
+    if($enable){Write-Host 'Facebook browsing is already blocked.'}
+    else{Write-Host 'Facebook restriction is already disabled.'}
+    return
+  }
+  if(-not $enable){VerifyPin}
+  $script:state.FacebookEnabled=$enable
+  SaveState
+  ApplyAll
 }
 function ListSites {
-  Write-Host 'RS8 Web Guard blocked domains:' -ForegroundColor Cyan
-  if(@($script:state.Domains).Count -eq 0){Write-Host 'None'}
-  foreach($d in @($script:state.Domains)){Write-Host "BLOCKED: $d"}
-  Write-Host 'Messenger allowed: https://www.facebook.com/messages/'
-  Write-Host 'Facebook Home-only restriction: not included.'
+  Write-Host ''
+  if($script:state.FacebookEnabled){
+    Write-Host 'Facebook Home / News Feed / other Facebook browsing: BLOCKED' -ForegroundColor Yellow
+    Write-Host 'Messenger: ALLOWED at https://www.facebook.com/messages/' -ForegroundColor Green
+    Write-Host 'Facebook login / account verification: ALLOWED (to support messaging)'
+  }else{
+    Write-Host 'Facebook restriction: OFF' -ForegroundColor Yellow
+  }
+  Write-Host ''
+  Write-Host 'Other blocked domains:' -ForegroundColor Cyan
+  if(@($script:state.Domains).Count -eq 0){Write-Host '  None'}
+  foreach($d in @($script:state.Domains)){Write-Host "  $d"}
+  Write-Host 'Supported browser policies: Edge, Chrome, Brave, Firefox'
+  Write-Host 'Note: Other browsers / Windows administrators may bypass local policies.'
 }
 function AddSite([string]$name) {
   NeedAdmin
@@ -206,6 +287,7 @@ function Uninstall {
   VerifyPin
   if((Read-Host 'Type REMOVE to uninstall') -cne 'REMOVE'){return}
   $script:state.Domains=@()
+  $script:state.FacebookEnabled=$false
   SaveState
   ApplyAll
   if(Test-Path $launcher){
@@ -217,20 +299,41 @@ function Uninstall {
 function Menu {
   while($true){
     Write-Host ''
-    Write-Host 'RS8 WEB GUARD' -ForegroundColor Cyan
-    Write-Host '1 Block domain | 2 Unblock (code) | 3 View list | 4 Reapply | 5 Change code | 6 Update | 7 Uninstall | 0 Exit'
-    $answer=Read-Host 'Choose'
+    Write-Host '===================================' -ForegroundColor DarkCyan
+    Write-Host '          RS8 WEB GUARD' -ForegroundColor Cyan
+    Write-Host '===================================' -ForegroundColor DarkCyan
+    if($script:state.FacebookEnabled){
+      Write-Host 'Facebook browsing: BLOCKED' -ForegroundColor Yellow
+      Write-Host 'Facebook Messages: ALLOWED' -ForegroundColor Green
+    }else{
+      Write-Host 'Facebook browsing restriction: OFF' -ForegroundColor Yellow
+    }
+    Write-Host ''
+    Write-Host '  1. Block a new website'
+    Write-Host '  2. Unblock website (admin code)'
+    Write-Host '  3. View blocked websites'
+    Write-Host '  4. Enable Facebook restriction'
+    Write-Host '  5. Disable Facebook restriction (admin code)'
+    Write-Host '  6. Reapply website policies'
+    Write-Host '  7. Change admin code'
+    Write-Host '  8. Update from GitHub'
+    Write-Host '  9. Uninstall (admin code)'
+    Write-Host '  0. Exit'
+    Write-Host ''
+    $answer=Read-Host 'Select option'
     try{
       switch($answer){
         '1'{AddSite ''}
         '2'{RemoveSite ''}
         '3'{ListSites}
-        '4'{ApplyAll}
-        '5'{NeedAdmin;VerifyPin;SetPin;SaveState}
-        '6'{NeedAdmin;VerifyPin;DownloadLocal;Write-Host 'Updated from GitHub.'}
-        '7'{Uninstall;return}
+        '4'{FacebookSwitch $true}
+        '5'{FacebookSwitch $false}
+        '6'{ApplyAll}
+        '7'{NeedAdmin;VerifyPin;SetPin;SaveState}
+        '8'{NeedAdmin;VerifyPin;DownloadLocal;ApplyAll;Write-Host 'Update downloaded. Reopen rs8web for the latest menu.'}
+        '9'{Uninstall;return}
         '0'{return}
-        default{Write-Host 'Invalid option'}
+        default{Write-Host 'Invalid option.'}
       }
     }catch{Write-Host $_.Exception.Message -ForegroundColor Red}
   }
@@ -250,5 +353,7 @@ try{
     'change-pin'{NeedAdmin;VerifyPin;SetPin;SaveState}
     'update'{NeedAdmin;VerifyPin;DownloadLocal}
     'uninstall'{Uninstall}
+    'facebook-on'{FacebookSwitch $true}
+    'facebook-off'{FacebookSwitch $false}
   }
 }catch{Write-Host ('ERROR: '+$_.Exception.Message) -ForegroundColor Red;exit 1}
