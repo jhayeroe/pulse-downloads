@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "RS8 Messenger Navigation Guard",
-  "version": "0.6.0",
-  "description": "Keeps Facebook Home blocked while preserving RS8 Messenger navigation and approved attachment previews.",
+  "version": "0.7.0",
+  "description": "Blocks Facebook Home navigation, including SPA routes, while allowing Messenger conversations and approved file links.",
   "permissions": [
     "tabs",
     "webNavigation",
@@ -11,6 +11,10 @@
   "host_permissions": [
     "*://*.facebook.com/*"
   ],
+  "action": {
+    "default_title": "RS8 Web Guard v0.7",
+    "default_popup": "status.html"
+  },
   "background": {
     "service_worker": "background.js"
   },
@@ -20,10 +24,22 @@
         "*://*.facebook.com/*"
       ],
       "js": [
+        "page-guard.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "*://*.facebook.com/*"
+      ],
+      "js": [
         "rules.js",
         "guard.js"
       ],
       "run_at": "document_start",
+      "world": "ISOLATED",
       "all_frames": false
     }
   ]
