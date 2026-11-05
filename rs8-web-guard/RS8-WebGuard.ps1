@@ -1,10 +1,10 @@
-# RS8 Web Guard v0.6 - fixed built-in admin code; noninteractive installation
+# RS8 Web Guard v0.7 - fixed built-in admin code; noninteractive installation
 # Public GitHub installer. The built-in code is stored as a one-way verifier, not plaintext.
 # Managed browser URL policies restrict Facebook browsing while allowing Messenger routes.
 [CmdletBinding()]
 param(
   [Parameter(Position=0)]
-  [ValidateSet('menu','add','remove','list','reapply','update','uninstall','facebook-on','facebook-off','doctor','login','help')]
+  [ValidateSet('menu','add','remove','list','reapply','update','uninstall','facebook-on','facebook-off','doctor','login','extension','help')]
   [string]$Action = 'menu',
   [Parameter(Position=1)][string]$Domain = ''
 )
@@ -83,7 +83,7 @@ function DownloadExtension {
   & icacls.exe $root '/grant' '*S-1-5-32-545:(OI)(CI)RX' | Out-Null
   if($LASTEXITCODE -ne 0){throw 'Could not enable read access for extension users.'}
   $base='https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-web-guard/browser-extension'
-  foreach($file in @('manifest.json','rules.js','background.js','guard.js')){
+  foreach($file in @('manifest.json','rules.js','background.js','guard.js','page-guard.js','status.html')){
     $dest=Join-Path $folder $file
     $tmp=$dest+'.tmp'
     try {
@@ -92,19 +92,21 @@ function DownloadExtension {
       Move-Item -LiteralPath $tmp -Destination $dest -Force
     } finally {if(Test-Path $tmp){Remove-Item -LiteralPath $tmp -Force}}
   }
-  Write-Host ('Browser extension files ready: '+$folder) -ForegroundColor Green
-  Write-Host 'One-time step: open chrome://extensions or edge://extensions, enable Developer mode, then Load unpacked and choose the folder above.' -ForegroundColor Yellow
-  Write-Host 'Keep the folder installed. The PowerShell URL policies still apply without the extension, but SPA redirects need the enabled extension.' -ForegroundColor Yellow
+  Write-Host ('Browser extension files updated: '+$folder) -ForegroundColor Green
+  Write-Host 'IMPORTANT: Copying these files does not activate or reload an extension in Chrome/Edge/Brave.' -ForegroundColor Yellow
+  Write-Host 'If extension is NEW: open chrome://extensions or edge://extensions; Developer mode ON; Load unpacked; select folder above.' -ForegroundColor Yellow
+  Write-Host 'If extension was ALREADY installed: click its Reload (circular arrow), then refresh the open Messenger tab.' -ForegroundColor Yellow
+  Write-Host 'Click the RS8 extension icon for the v0.7 status popup. Until enabled, SPA Home navigation may still bypass URL policies.' -ForegroundColor Yellow
 }
 function Init {
   if(Test-Path $store){
     $script:state=Get-Content $store -Raw -Encoding UTF8 | ConvertFrom-Json
     $changed=$false
     if(-not $script:state.PSObject.Properties['SchemaVersion']){
-      $script:state | Add-Member -NotePropertyName SchemaVersion -NotePropertyValue 6
+      $script:state | Add-Member -NotePropertyName SchemaVersion -NotePropertyValue 7
       $changed=$true
-    }elseif([int]$script:state.SchemaVersion -lt 6){
-      $script:state.SchemaVersion=6
+    }elseif([int]$script:state.SchemaVersion -lt 7){
+      $script:state.SchemaVersion=7
       $changed=$true
     }
     # Upgrade all prior per-computer passcodes to the new fixed code without prompting.
@@ -150,7 +152,7 @@ function Init {
   & icacls.exe $root '/inheritance:r' '/grant:r' '*S-1-5-18:(OI)(CI)F' '*S-1-5-32-544:(OI)(CI)F' | Out-Null
   if($LASTEXITCODE -ne 0){throw 'Could not secure settings folder.'}
   $script:state=[pscustomobject]@{
-    SchemaVersion=6;Salt=$fixedSalt;Hash=$fixedHash;Domains=@();FacebookEnabled=$true
+    SchemaVersion=7;Salt=$fixedSalt;Hash=$fixedHash;Domains=@();FacebookEnabled=$true
     Edge=@();Chrome=@();Brave=@();Firefox=@()
     EdgeAllow=@();ChromeAllow=@();BraveAllow=@();FirefoxAllow=@()
   }
@@ -295,6 +297,27 @@ function FacebookSwitch([bool]$enable) {
   SaveState
   ApplyAll
 }
+function ExtensionGuide {
+  $folder=Join-Path $root 'browser-extension'
+  Write-Host ''
+  Write-Host 'RS8 WEB GUARD - BROWSER EXTENSION SETUP' -ForegroundColor Cyan
+  Write-Host ('Extension folder: '+$folder)
+  if(Test-Path (Join-Path $folder 'manifest.json')){
+    try {
+      $manifest=Get-Content (Join-Path $folder 'manifest.json') -Raw | ConvertFrom-Json
+      Write-Host ('Downloaded extension version: '+$manifest.version) -ForegroundColor Green
+    }catch{Write-Host 'Downloaded manifest could not be read.' -ForegroundColor Yellow}
+  }else{Write-Host 'Extension files missing. Run rs8web update as administrator.' -ForegroundColor Red}
+  Write-Host 'Chrome: open chrome://extensions' -ForegroundColor Cyan
+  Write-Host 'Edge: open edge://extensions' -ForegroundColor Cyan
+  Write-Host 'Brave: open brave://extensions' -ForegroundColor Cyan
+  Write-Host 'Turn ON Developer mode.'
+  Write-Host 'If not installed, click Load unpacked and select the extension folder.'
+  Write-Host 'If already installed, click Reload (circular arrow) on RS8 Messenger Navigation Guard.'
+  Write-Host 'Then refresh or reopen https://www.facebook.com/messages/ and test the upper-left Facebook logo.'
+  Write-Host 'The RS8 extension icon popup should say v0.7. This confirms the extension is enabled, not its full policy enforcement.'
+  Write-Host 'Browser-managed extension installation is a separate step from PowerShell policy installation.' -ForegroundColor Yellow
+}
 function Doctor {
   Write-Host ''
   Write-Host 'RS8 WEB GUARD - POLICY DIAGNOSTICS' -ForegroundColor Cyan
@@ -329,6 +352,7 @@ function Doctor {
   Write-Host 'Click Reload policies. Look for URLBlocklist and URLAllowlist.'
   Write-Host 'Browser status must be OK, not Ignored / Unsupported / Error.'
   Write-Host 'Presence in the Windows registry alone does not prove enforcement.'
+  ExtensionGuide
   try{
     $os=Get-CimInstance -ClassName Win32_OperatingSystem -ErrorAction Stop
     Write-Host ("Windows edition: {0}" -f $os.Caption)
@@ -416,6 +440,7 @@ function Menu {
     Write-Host '  7. Update from GitHub (policies + browser extension)'
     Write-Host '  8. Uninstall (admin code)'
     Write-Host '  D. Diagnose browser policies'
+    Write-Host '  E. Browser extension setup / reload guide'
     Write-Host '  L. Open Messenger sign-in page'
     Write-Host '  0. Exit'
     Write-Host ''
@@ -431,6 +456,7 @@ function Menu {
         '7'{NeedAdmin;DownloadLocal;DownloadExtension;ApplyAll;Write-Host 'Update downloaded. Reopen rs8web for the latest menu.'}
         '8'{Uninstall;return}
         'D'{Doctor}
+        'E'{ExtensionGuide}
         'L'{OpenMessengerLogin}
         '0'{[Environment]::Exit(0)}
         default{Write-Host 'Invalid option.'}
@@ -455,6 +481,7 @@ try{
     'facebook-on'{FacebookSwitch $true}
     'facebook-off'{FacebookSwitch $false}
     'doctor'{Doctor}
+    'extension'{ExtensionGuide}
     'login'{OpenMessengerLogin}
   }
 }catch{Write-Host ('ERROR: '+$_.Exception.Message) -ForegroundColor Red;exit 1}
