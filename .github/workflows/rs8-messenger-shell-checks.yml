@@ -1,0 +1,29 @@
+name: RS8 Messenger Shell Pilot Static Checks
+on:
+  push:
+    paths:
+      - 'rs8-web-guard/messenger-shell/**'
+      - '.github/workflows/rs8-messenger-shell-checks.yml'
+  workflow_dispatch:
+jobs:
+  syntax:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse PowerShell scripts without executing
+        shell: powershell
+        run: |
+          $files = Get-ChildItem -Path rs8-web-guard/messenger-shell -Filter '*.ps1' -File
+          foreach ($file in $files) {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$tokens, [ref]$errors) | Out-Null
+            if ($errors.Count -ne 0) {
+              $errors | ForEach-Object { Write-Error $_.ToString() }
+              throw "PowerShell parse errors in $($file.Name)"
+            }
+            Write-Host "$($file.Name): syntax OK"
+          }
+      - name: Parse navigation guard JavaScript
+        shell: pwsh
+        run: node --check rs8-web-guard/messenger-shell/navigation-guard.js
