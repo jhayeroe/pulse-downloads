@@ -19,8 +19,9 @@ yet. Accordingly, `extension-ids.json` intentionally has empty IDs and
 1. Review extension code and security/privacy permissions (tabs/webNavigation/storage).
 2. Publish the Chromium build to Chrome Web Store (company-managed listing if appropriate).
 3. Put the approved 32-letter extension ID into `extension-ids.json`.
-4. Optionally publish a separate Edge Add-ons build and add its ID; otherwise
-   Edge can force-install the Chrome Web Store version.
+4. Publish a separate Edge Add-ons build and add its ID. On Windows devices
+   not joined to a domain, the Edge force-install policy is limited to packages
+   listed in Microsoft Edge Add-ons; do not silently fall back to Chrome Store.
 5. Run `Set-RS8ManagedExtensions.ps1` elevated (via the RS8 installer, GPO,
    Intune, or company software deployment). Staff do not use Load unpacked.
 6. Test on employee device editions. The status of registry policies alone
