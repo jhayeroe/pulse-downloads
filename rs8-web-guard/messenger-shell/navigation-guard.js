@@ -11,6 +11,7 @@
     /^\/checkpoint(?:\/|$)/i, /^\/two_factor(?:\/|$)/i,
     /^\/recover(?:\/|$)/i, /^\/confirmemail(?:\/|$)/i,
     /^\/ajax\/login(?:\/|$)/i, /^\/api\/graphql(?:\/|$)/i,
+    /^\/l\.php$/i, // Host checks redirect destination before opening externally.
     /^\/connect\/login_success\.html$/i,
     /^\/messaging\/attachment(?:\/|$)/i,
     /^\/ajax\/messaging\/attachment\.php$/i,
