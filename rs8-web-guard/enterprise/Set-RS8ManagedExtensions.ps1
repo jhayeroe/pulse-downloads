@@ -51,7 +51,7 @@ try {
   if($edge){
     AddApprovedPolicy 'Edge' 'HKLM:\SOFTWARE\Policies\Microsoft\Edge\ExtensionInstallForcelist' $edge $edgeURL
   }else{
-    AddApprovedPolicy 'Edge (Chrome Web Store)' 'HKLM:\SOFTWARE\Policies\Microsoft\Edge\ExtensionInstallForcelist' $chrome $chromeURL
+    Write-Host 'Edge: publication in Microsoft Edge Add-ons is required for automatic installation on this non-domain Windows device.' -ForegroundColor Yellow
   }
   if([bool]$config.brave_chrome_store_enabled){
     AddApprovedPolicy 'Brave (validate policy support before rollout)' 'HKLM:\SOFTWARE\Policies\BraveSoftware\Brave\ExtensionInstallForcelist' $chrome $chromeURL
