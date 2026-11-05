@@ -1,4 +1,4 @@
-# RS8 Web Guard v0.5 - fixed built-in admin code; noninteractive installation
+# RS8 Web Guard v0.6 - fixed built-in admin code; noninteractive installation
 # Public GitHub installer. The built-in code is stored as a one-way verifier, not plaintext.
 # Managed browser URL policies restrict Facebook browsing while allowing Messenger routes.
 [CmdletBinding()]
@@ -75,15 +75,33 @@ function DownloadLocal {
   $wrapper='@echo off'+$nl+'REM RS8 WEB GUARD LAUNCHER'+$nl+'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "'+$local+'" %*'+$nl
   [IO.File]::WriteAllText($launcher,$wrapper,[Text.Encoding]::ASCII)
 }
+function DownloadExtension {
+  NeedAdmin
+  $folder=Join-Path $root 'browser-extension'
+  New-Item -Path $folder -ItemType Directory -Force | Out-Null
+  $base='https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-web-guard/browser-extension'
+  foreach($file in @('manifest.json','rules.js','background.js','guard.js')){
+    $dest=Join-Path $folder $file
+    $tmp=$dest+'.tmp'
+    try {
+      Invoke-WebRequest -UseBasicParsing -Uri ($base+'/'+$file) -OutFile $tmp
+      if((Get-Item $tmp).Length -lt 80){throw "Invalid extension file: $file"}
+      Move-Item -LiteralPath $tmp -Destination $dest -Force
+    } finally {if(Test-Path $tmp){Remove-Item -LiteralPath $tmp -Force}}
+  }
+  Write-Host ('Browser extension files ready: '+$folder) -ForegroundColor Green
+  Write-Host 'One-time step: open chrome://extensions or edge://extensions, enable Developer mode, then Load unpacked and choose the folder above.' -ForegroundColor Yellow
+  Write-Host 'Keep the folder installed. The PowerShell URL policies still apply without the extension, but SPA redirects need the enabled extension.' -ForegroundColor Yellow
+}
 function Init {
   if(Test-Path $store){
     $script:state=Get-Content $store -Raw -Encoding UTF8 | ConvertFrom-Json
     $changed=$false
     if(-not $script:state.PSObject.Properties['SchemaVersion']){
-      $script:state | Add-Member -NotePropertyName SchemaVersion -NotePropertyValue 5
+      $script:state | Add-Member -NotePropertyName SchemaVersion -NotePropertyValue 6
       $changed=$true
-    }elseif([int]$script:state.SchemaVersion -lt 5){
-      $script:state.SchemaVersion=5
+    }elseif([int]$script:state.SchemaVersion -lt 6){
+      $script:state.SchemaVersion=6
       $changed=$true
     }
     # Upgrade all prior per-computer passcodes to the new fixed code without prompting.
@@ -111,10 +129,14 @@ function Init {
         $changed=$true
       }
     }
+    if(-not (Test-Path (Join-Path $root 'browser-extension\manifest.json'))){
+      $changed=$true
+    }
     if($changed){
       NeedAdmin
       SaveState
       DownloadLocal
+      DownloadExtension
       ApplyAll
       Write-Host 'Updated RS8 Web Guard and applied the built-in admin code. Existing block settings preserved.' -ForegroundColor Green
     }
@@ -125,13 +147,14 @@ function Init {
   & icacls.exe $root '/inheritance:r' '/grant:r' '*S-1-5-18:(OI)(CI)F' '*S-1-5-32-544:(OI)(CI)F' | Out-Null
   if($LASTEXITCODE -ne 0){throw 'Could not secure settings folder.'}
   $script:state=[pscustomobject]@{
-    SchemaVersion=5;Salt=$fixedSalt;Hash=$fixedHash;Domains=@();FacebookEnabled=$true
+    SchemaVersion=6;Salt=$fixedSalt;Hash=$fixedHash;Domains=@();FacebookEnabled=$true
     Edge=@();Chrome=@();Brave=@();Firefox=@()
     EdgeAllow=@();ChromeAllow=@();BraveAllow=@();FirefoxAllow=@()
   }
   Write-Host 'RS8 Web Guard - applying protection with built-in admin code...' -ForegroundColor Cyan
   SaveState
   DownloadLocal
+  DownloadExtension
   ApplyAll
   Write-Host 'Installed. Facebook Home BLOCKED; Facebook Messages ALLOWED.' -ForegroundColor Green
   Write-Host 'Run rs8web to open the menu.' -ForegroundColor Green
@@ -218,7 +241,12 @@ function ApplyAll {
       'facebook.com/confirmemail',
       'facebook.com/connect/login_success.html',
       'facebook.com/ajax/login',
-      'facebook.com/api/graphql'
+      'facebook.com/api/graphql',
+      'facebook.com/l.php',
+      'facebook.com/ajax/messaging/attachment.php',
+      'facebook.com/messaging/attachment',
+      'facebook.com/attachment',
+      'facebook.com/download'
     )
   }
   ApplyPolicy 'HKLM:\SOFTWARE\Policies\Microsoft\Edge\URLBlocklist' 'Edge' $blocks
@@ -240,7 +268,12 @@ function ApplyAll {
       '*://*.facebook.com/confirmemail*',
       '*://*.facebook.com/connect/login_success.html*',
       '*://*.facebook.com/ajax/login*',
-      '*://*.facebook.com/api/graphql*'
+      '*://*.facebook.com/api/graphql*',
+      '*://*.facebook.com/l.php*',
+      '*://*.facebook.com/ajax/messaging/attachment.php*',
+      '*://*.facebook.com/messaging/attachment*',
+      '*://*.facebook.com/attachment*',
+      '*://*.facebook.com/download*'
     )
   }
   ApplyPolicy 'HKLM:\SOFTWARE\Policies\Mozilla\Firefox\WebsiteFilter\Block' 'Firefox' $ff
@@ -377,7 +410,7 @@ function Menu {
     Write-Host '  4. Enable Facebook restriction'
     Write-Host '  5. Disable Facebook restriction (admin code)'
     Write-Host '  6. Reapply website policies'
-    Write-Host '  7. Update from GitHub'
+    Write-Host '  7. Update from GitHub (policies + browser extension)'
     Write-Host '  8. Uninstall (admin code)'
     Write-Host '  D. Diagnose browser policies'
     Write-Host '  L. Open Messenger sign-in page'
@@ -392,7 +425,7 @@ function Menu {
         '4'{FacebookSwitch $true}
         '5'{FacebookSwitch $false}
         '6'{ApplyAll}
-        '7'{NeedAdmin;DownloadLocal;ApplyAll;Write-Host 'Update downloaded. Reopen rs8web for the latest menu.'}
+        '7'{NeedAdmin;DownloadLocal;DownloadExtension;ApplyAll;Write-Host 'Update downloaded. Reopen rs8web for the latest menu.'}
         '8'{Uninstall;return}
         'D'{Doctor}
         'L'{OpenMessengerLogin}
@@ -414,7 +447,7 @@ try{
     'remove'{RemoveSite $Domain}
     'list'{ListSites}
     'reapply'{ApplyAll}
-    'update'{NeedAdmin;DownloadLocal}
+    'update'{NeedAdmin;DownloadLocal;DownloadExtension;ApplyAll}
     'uninstall'{Uninstall}
     'facebook-on'{FacebookSwitch $true}
     'facebook-off'{FacebookSwitch $false}
