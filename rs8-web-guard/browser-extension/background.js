@@ -1,4 +1,4 @@
-/* RS8 Web Guard v0.6 - service worker for SPA navigation and message photo previews. */
+/* RS8 Web Guard v0.7 - event-level SPA navigation guard and photo grants. */
 importScripts("rules.js");
 const GRANT_PREFIX = "rs8-photo:";
 const GRANT_TTL_MS = 120000;
@@ -25,6 +25,10 @@ function checkNavigation(details) {
 }
 chrome.webNavigation.onHistoryStateUpdated.addListener(checkNavigation);
 chrome.webNavigation.onCommitted.addListener(checkNavigation);
+chrome.webNavigation.onReferenceFragmentUpdated.addListener(checkNavigation);
+chrome.tabs.onUpdated.addListener((tabId, changes) => {
+  if (changes.url) checkNavigation({ tabId, frameId: 0, url: changes.url });
+});
 chrome.tabs.onRemoved.addListener((tabId) => {
   chrome.storage.session.remove(grantKey(tabId)).catch(() => {});
 });
