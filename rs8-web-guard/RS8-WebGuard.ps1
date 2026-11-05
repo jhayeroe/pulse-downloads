@@ -175,7 +175,8 @@ function ApplyPublishedExtensionPolicy {
   DownloadLocal
   DownloadExtension
   ApplyAll
-  Write-Host 'Installed. Facebook Home BLOCKED; Facebook Messages ALLOWED.' -ForegroundColor Green
+  Write-Host 'Base Facebook URL policies installed. Messenger is allowed.' -ForegroundColor Green
+  Write-Host 'Live Facebook Home blocking is NOT complete until a supported browser extension is installed.' -ForegroundColor Yellow
   Write-Host 'Run rs8web to open the menu.' -ForegroundColor Green
 }
 function CleanDomain([string]$text) {
@@ -326,8 +327,8 @@ function ExtensionGuide {
   Write-Host 'Edge: open edge://extensions' -ForegroundColor Cyan
   Write-Host 'Brave: open brave://extensions' -ForegroundColor Cyan
   Write-Host 'Turn ON Developer mode.'
-  Write-Host 'If not installed, click Load unpacked and select the extension folder.'
-  Write-Host 'If already installed, click Reload (circular arrow) on RS8 Messenger Navigation Guard.'
+  Write-Host 'Production silent deployment needs a published, signed RS8 extension and enterprise force-install policy.'
+  Write-Host 'Unpacked extension installation is only a temporary developer testing method.'
   Write-Host 'Then refresh or reopen https://www.facebook.com/messages/ and test the upper-left Facebook logo.'
   Write-Host 'The RS8 extension icon popup should say v0.7. This confirms the extension is enabled, not its full policy enforcement.'
   Write-Host 'Browser-managed extension installation is a separate step from PowerShell policy installation.' -ForegroundColor Yellow
