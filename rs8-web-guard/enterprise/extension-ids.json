@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "version": "0.8-draft",
+  "chrome_web_store_id": "",
+  "edge_addons_id": "",
+  "brave_chrome_store_enabled": false,
+  "notes": "Blank IDs are intentional. Do not force install until RS8 extension has been published and approved."
+}
