@@ -79,6 +79,9 @@ function DownloadExtension {
   NeedAdmin
   $folder=Join-Path $root 'browser-extension'
   New-Item -Path $folder -ItemType Directory -Force | Out-Null
+  # Read-only access for standard users, needed for Chrome/Edge to load extension assets.
+  & icacls.exe $root '/grant' '*S-1-5-32-545:(OI)(CI)RX' | Out-Null
+  if($LASTEXITCODE -ne 0){throw 'Could not enable read access for extension users.'}
   $base='https://raw.githubusercontent.com/jhayeroe/pulse-downloads/main/rs8-web-guard/browser-extension'
   foreach($file in @('manifest.json','rules.js','background.js','guard.js')){
     $dest=Join-Path $folder $file
